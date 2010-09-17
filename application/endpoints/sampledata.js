@@ -1,9 +1,10 @@
-var couchdb  = require('../libs/node-couchdb/lib/couchdb'),
-    client   = couchdb.createClient(5984, 'localhost'),
-    db       = client.db('unionpacific'),
-    sys      = require('sys'),
-	spawn    = require('child_process').spawn,
-	User    = require('../data/User');
+var couchdb    = require('../libs/node-couchdb/lib/couchdb'),
+    client     = couchdb.createClient(5984, 'localhost'),
+    db         = client.db('unionpacific'),
+    sys        = require('sys'),
+	spawn      = require('child_process').spawn,
+	User       = require('../data/User'),
+	Project    = require('../data/Project');
 	//game     = require('../data/game'),
 	//user     = require('../data/user');
 
@@ -74,6 +75,43 @@ function initialize(req, res, next)
 		u7.last  = "Petrone";
 		u7.title = "Lorem Ipsum Dolor";
 	
+	var u8 = new User();
+		u8._id   = "aburgess@blitzagency.com";
+		u8.first = "Amanda";
+		u8.last  = "Burgess";
+		u8.title = "Lorem Ipsum Dolor";
+	
+	var u9 = new User();
+		u9._id   = "mpark@blitzagency.com";
+		u9.first = "Molly";
+		u9.last  = "Park";
+		u9.title = "Lorem Ipsum Dolor";
+	
+	var u10 = new User();
+		u10._id   = "yflomin@blitzagency.com";
+		u10.first = "Yosef";
+		u10.last  = "Flomin";
+		u10.title = "Lorem Ipsum Dolor";
+		
+	
+	var p1              = new Project();
+		p1.name         = "Zoobles";
+		p1.stakeholders = [u8._id, u7._id];
+	
+	var p2              = new Project();
+		p2.name         = "Halo Waypoint";
+		p2.stakeholders = [u6._id, u5._id, u3._id, u2._id, u1._id];
+	
+	var p3              = new Project();
+		p3.name         = "Disney Mobile";
+		p3.stakeholders = [u9._id, u2._id, u1._id];
+		
+	var p4              = new Project();
+		p4.name         = "Lincoln MK?";
+		p4.stakeholders = [u8._id, u7._id, u10._id];
+
+
+	// Users
 	db.saveDoc(u1);
 	db.saveDoc(u2);
 	db.saveDoc(u3);
@@ -81,6 +119,15 @@ function initialize(req, res, next)
 	db.saveDoc(u5);
 	db.saveDoc(u6);
 	db.saveDoc(u7);
+	db.saveDoc(u8);
+	db.saveDoc(u9);
+	db.saveDoc(u10);
+	
+	// Projects
+	db.saveDoc(p1);
+	db.saveDoc(p2);
+	db.saveDoc(p3);
+	db.saveDoc(p4);
 	
 	next({"ok":true, "message":"done"});
 }
