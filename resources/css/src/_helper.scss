@@ -1,0 +1,105 @@
+@mixin boxshadow($color:#000, $x:0, $y:0, $size:2px, $inset:false) 
+{
+    $full: $x $y $size $color;
+    @if $inset == 'inset' 
+    {
+        $full: $full $inset;
+    }
+    -moz-box-shadow:    $full;
+    -webkit-box-shadow: $full;
+    box-shadow:         $full;
+}
+
+@mixin lineargradient($color1, $color2)
+{
+    background:       $color1;
+    @if $color2
+    {
+        background-image: -webkit-gradient(linear, left top, left bottom, from($color1), to($color2));
+        background-image: -moz-linear-gradient(top, $color1, $color2);
+    }
+}
+
+@mixin radialgradient($color1, $color2, $anchor:left)
+{
+	background: $color1;
+	background-image: -moz-radial-gradient($anchor 45deg, circle closest-corner, $color1 10%, $color2 100%); 
+	background-image: -webkit-gradient(radial, $anchor center, 10, $anchor center, 150, from($color1), to($color2));
+}
+
+@mixin onecorner($radius, $hside, $vside)
+{
+	border-#{$hside}-#{$vside}-radius: 			$radius;
+	-moz-border-radius-#{$hside}#{$vside}: 		$radius;
+	-webkit-border-#{$hside}-#{$vside}-radius: 	$radius;
+}
+
+@mixin corner($radius:5px)
+{	
+    -wekit-border-radius:   $radius;
+    -moz-border-radius:     $radius;
+    -o-border-radius:       $radius;
+    -ms-border-radius:      $radius;
+    -khtml-border-radius:   $radius;
+    border-radius:          $radius;
+}
+
+@mixin transition($prop:all, $secs:.15s, $easing:ease-in-out)
+{
+    -webkit-transition: $prop $secs $easing;
+    -moz-transition:    $prop $secs $easing; 
+    -o-transition:      $prop $secs $easing;
+    transition:         $prop $secs $easing;
+}
+
+@mixin backgroundsize($width, $height)
+{
+    $full: $width $width;
+    @if $height
+    {
+        $full: $width $height;
+    }
+    
+    -moz-background-size:	 	$full;
+    -o-background-size:			$full;
+	-webkit-background-size: 	$full;
+}
+
+@mixin borderimage($url, $offset_top:5, $offset_right:5, $offset_bottom:5, $offset_left: 5, $scaling:stretch)
+{
+	-moz-border-image: url($url) $offset_top $offset_right $offset_bottom $offset_left $scaling; 
+	-webkit-border-image: url($url) $offset_top $offset_right $offset_bottom $offset_left $scaling;
+}
+
+@mixin rotate($val)
+{
+	-webkit-transform:  rotate($val);
+	-moz-transform: 	rotate($val);
+	-o-transform: 		rotate($val);
+}
+
+// NON-SEMANTIC HELPER CLASSES 
+// source: http://html5boilerplate.com/
+
+// for image replacement
+.ir { display:block; text-indent:-999em; overflow:hidden; background-repeat: no-repeat; }
+
+// Hide for both screenreaders and browsers
+// css-discuss.incutio.com/wiki/Screenreader_Visibility 
+.hidden { display:none; visibility:hidden; }
+
+// Hide only visually, but have it available for screenreaders
+// www.webaim.org/techniques/css/invisiblecontent/
+// Solution from: j.mp/visuallyhidden - Thanks Jonathan Neal! 
+ .visuallyhidden { position:absolute !important;  
+	  clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+	  clip: rect(1px, 1px, 1px, 1px); }
+
+// Hide visually and from screenreaders, but maintain layout 
+.invisible { visibility: hidden; }
+ 
+// >> The Magnificent CLEARFIX << 
+.clearfix:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
+.clearfix { display: inline-block; }
+* html .clearfix { height: 1%; } /* Hides from IE-mac \*/
+.clearfix { display: block; }

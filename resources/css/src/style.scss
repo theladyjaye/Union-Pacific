@@ -1,0 +1,60 @@
+@import "reset";
+@import "config";
+@import "helper";
+@import "fcbkcomplete";
+
+
+// BASE
+html {overflow-y: scroll;}
+body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: $color_light_gray; @include lineargradient($color_light_white, $color_dark_white); background-attachment: fixed;}
+    a {text-decoration: none; @include transition(all, 0.15s, ease-out); color: $color_light_blue;}
+    a:active {position: relative; top: 1px;}
+	a:hover {color: #34d5f0;}
+	ul {list-style: none;}
+	hr {clear: both}
+	hr.thick {border-width: 6px; border-color: #000;}
+#container {position: relative; margin: 0 auto; width: $wrap_width; padding: 10px 0 20px 0; opacity: 1; min-height: 800px;}
+	.wrap {position: relative; width: $wrap_width;}
+// END BASE
+
+// HEADER
+	#header {width: 100%; border-top: 3px solid $color_light_blue;
+		.wrap {margin: 10px auto;}
+		& h1 {font-size: 40px;
+			& a {display: block;}
+		}
+	}	
+// END HEADER
+
+// PAGES	
+	.page {position: absolute; top: 0; width: 980px;}
+	
+	// DASHBOARD
+	#dashboard {
+		& ul {background: rgba(226, 226, 226, 0.3);
+			& li {float: left; margin: 12px;
+				& a {width: 260px; height: 160px; display: block; border: 1px solid #ddd; background: $color_light_white; color: $color_light_blue; @include corner(); padding: 20px;
+					&:hover {background: $color_light_blue; color: $color_light_white}
+				}
+			}
+		}
+	}
+	
+	// END DASHBOARD
+	
+	
+// END PAGES
+
+// ICONS
+.icon {background: url('/www/resources/imgs/sprite-icons.png') no-repeat; width: 27px; height: 27px; float: left; display: block;}
+.icon.icon-wii {background-position: 0 0;}
+.icon.icon-ps3 {background-position: -28px 0;}
+.icon.icon-xbox360 {background-position: -56px 0;}
+.icon.icon-pc {background-position: -84px 0;}
+.icon.icon-logo {background-position: 0 -50px; width: 240px; height: 60px;}
+
+// END ICONS	
+
+
+	
+
