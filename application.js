@@ -5,6 +5,7 @@ var connect      = require('connect'),
 	sampledata   = require('./application/endpoints/sampledata'),
 	search       = require('./application/endpoints/search');
 	project      = require('./application/endpoints/project');
+	groups       = require('./application/endpoints/groups');
 	
 
 var server = connect.createServer(
@@ -23,6 +24,7 @@ server.use("/resources/templates", connect.staticProvider(__dirname + '/resource
 server.use("/api/sampledata/", connect.router(sampledata.endpoints));
 server.use("/api/search/", connect.router(search.endpoints));
 server.use("/api/projects/", connect.router(project.endpoints));
+server.use("/api/groups/", connect.router(groups.endpoints));
 
 server.use(defaults.defaultResponse);
 server.use(defaults.renderResponse);

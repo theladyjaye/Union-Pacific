@@ -4,7 +4,8 @@ var couchdb    = require('../libs/node-couchdb/lib/couchdb'),
     sys        = require('sys'),
 	spawn      = require('child_process').spawn,
 	User       = require('../data/User'),
-	Project    = require('../data/Project');
+	Project    = require('../data/Project'),
+	Group      = require('../data/Group');
 	//game     = require('../data/game'),
 	//user     = require('../data/user');
 
@@ -109,6 +110,12 @@ function initialize(req, res, next)
 	var p4              = new Project();
 		p4.name         = "Lincoln MK?";
 		p4.stakeholders = [u8._id, u7._id, u10._id];
+		
+	
+	/*var g1 = new Group();
+	    g1."group/html";
+	    g1.checklist = 
+	*/
 
 
 	// Users
