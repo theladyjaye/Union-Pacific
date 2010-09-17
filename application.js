@@ -1,7 +1,8 @@
 require.paths.unshift("/usr/local/lib/node");
 
 var connect      = require('connect'),
-	defaults     = require('./application/endpoints/default');
+	defaults     = require('./application/endpoints/default'),
+	sampledata   = require('./application/endpoints/sampledata');
 	
 //var main         = require('./endpoints/main');
 //var matches      = require('./endpoints/matches');
@@ -22,7 +23,7 @@ server.use("/resources/imgs", connect.staticProvider(__dirname + '/resources/img
 server.use("/resources/js", connect.staticProvider(__dirname + '/resources/js'));
 server.use("/resources/templates", connect.staticProvider(__dirname + '/resources/templates'));
 
-//server.use("/api/sampledata/", connect.router(sampledata.endpoints));
+server.use("/api/sampledata/", connect.router(sampledata.endpoints));
 //server.use("/games/", connect.router(games.endpoints));
 //server.use("/matches/", connect.router(matches.endpoints));
 
