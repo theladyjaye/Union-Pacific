@@ -1,0 +1,13 @@
+<li>
+	<a href="#/project/${utils.sanitize_project_name(name)}">
+		<span class="title">${name}</span>
+		<span class="timestamp">Created ${phui.utils.elapsed_time(created_on)}</span>
+		<span class="stakeholders-title">Stakeholders</span>
+		<span class="stakeholders">
+			{{each stakeholders}}
+				${this}<br />
+			{{/each}}
+		</span>
+		<span class="additional-stakeholders">${utils.get_additional_stakeholders_count(stakeholders)}</span>
+	</a>
+</li>

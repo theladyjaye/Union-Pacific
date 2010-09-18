@@ -1,6 +1,7 @@
 @import "reset";
 @import "config";
 @import "helper";
+@import "modal";
 @import "fcbkcomplete";
 
 
@@ -18,13 +19,24 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 // END BASE
 
 // HEADER
-	#header {width: 100%; border-top: 3px solid $color_light_blue;
+	#header {width: 100%; height: 60px; border-top: 3px solid $color_light_blue;
 		.wrap {margin: 10px auto;}
-		& h1 {font-size: 40px;
+		& h1 {font-size: 40px; float: left;
 			& a {display: block;}
 		}
 	}	
+	
+	// NAV
+		#nav {position: absolute; top: -14px; right: 20px;
+			& a	{float: left; padding: 10px; @include onecorner(5px, 'bottom', 'left'); @include onecorner(5px, 'bottom', 'right'); background: $color_dark_gray; @include boxshadow(rgba(0, 0, 0, 0.3), 0, 0, 1px); font-weight: bold; text-transform: uppercase;
+				&:hover {background: $color_light_blue; color: $color_light_white;}
+			}			
+		}
+	// END NAV
+	
 // END HEADER
+
+
 
 // PAGES	
 	.page {position: absolute; top: 0; width: 980px;}
@@ -33,8 +45,16 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 	#dashboard {
 		& ul {background: rgba(226, 226, 226, 0.3);
 			& li {float: left; margin: 12px;
-				& a {width: 260px; height: 160px; display: block; border: 1px solid #ddd; background: $color_light_white; color: $color_light_blue; @include corner(); padding: 20px;
-					&:hover {background: $color_light_blue; color: $color_light_white}
+				& a {width: 260px; height: 160px; display: block; border: 1px solid #ddd; background: $color_light_white; color: $color_light_blue; @include corner(); padding: 20px; font-weight: bold;
+					&:hover {background: $color_light_blue; color: $color_light_white; 
+						& .timestamp {color: $color_light_white; opacity: 0.6;}
+						& .stakeholders {color: $color_light_white;}
+					}
+					& .title {float: left; font-size: 24px;}
+					& .timestamp {float: left; clear: left; font-style: italic; color: $color_dark_gray; opacity: 0.3; font-weight: normal;}
+					& .stakeholders-title {color: $color_dark_gray; font-weight: bold; float: left; clear: left; margin: 10px 0 0;}
+					& .stakeholders {float: left; clear: left; color: #bbb; font-weight: normal; height: 53px; overflow: hidden;}
+					& .additional-stakeholders {float: left; clear: left;}
 				}
 			}
 		}
@@ -42,6 +62,19 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 	
 	// END DASHBOARD
 	
+	
+	// ADD PROJECT MODAL
+		#modal-add-project {background: #fff; @include corner(); @include boxshadow(rgba(0, 0, 0, 0.3), 0, 0, 1px);
+			& .field-item {float: left; clear: left;
+				& label {float: left; width: 100px; margin-right: 20px; font-weight: bold; text-transform: uppercase;}
+				& .input-field {float: left;}
+			}
+			& #facebook-list {margin-top: 10px;}
+			& ul.holder li.bit-box {background: $color_light_blue; @include corner(); border-color: $color_light_blue; color: $color_light_white;
+				& input {@include corner();}
+			}
+		}	
+	// END ADD PROJECT MODAL
 	
 // END PAGES
 

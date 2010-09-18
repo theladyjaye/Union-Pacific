@@ -9,7 +9,8 @@
 	<script src="resources/js/jquery.tmpl.js"></script>
 	<script src="resources/js/sammy.min.js"></script>
 	<script src="resources/js/jquery.render_template.js"></script>
-	<script src="resources/js/fcbkcomplete.min.js"></script>
+	<script src="resources/js/jqModal.js"></script>
+	<script src="resources/js/fcbkcomplete.js"></script>
 	<script src="resources/js/phui.utils.js"></script>
 	<script src="resources/js/unionpacific.main.js"></script>
 </head>
@@ -17,23 +18,40 @@
 	<div id="header">
 		<div class="wrap">
 			<h1><a href="/">Union Pacific</a></h1>
+			<ul id="nav">
+				<li><a href="#" id="nav-add-project">Add Project &raquo;</a></li>
+			</ul>
 		</div>
 	</div>
 	<div id="container">
 		<div class="wrap">
 			<div id="dashboard" class="page">
-				<ul>
-					<li><a href="#">Project One</a></li>
-					<li><a href="#">Project One</a></li>
-					<li><a href="#">Project One</a></li>
-					<li><a href="#">Project One</a></li>
-					<li><a href="#">Project One</a></li>
-					<li><a href="#">Project One</a></li>
-					<li><a href="#">Project One</a></li>
-					<li><a href="#">Project One</a></li>
-				</ul>
+				<ul id="projects"></ul>
 			</div>
 		</div>
+	</div>
+	
+	<div id="modal-add-project" class="jqmWindow">
+		<h2>Add Project</h2>
+		<form action="" method="post">
+			<div class="field-item">
+				<label for="name">Name</label>
+				<input type="text" name="name" class="input-field" />
+			</div>
+			<div class="field-item">
+				<label>Stakeholders:</label>
+				<div id="facebook-list" class="input-field">
+          			<input type="text" value="" id="facebook-demo" />
+	        	  	<ul id="preadded" style="display:none">     
+	        	  	</ul>
+	        	  	<div id="facebook-auto">
+	                    <div class="default">Type the name of a stakeholder</div> 
+	                    <ul id="feed">            
+	                    </ul>
+					</div>
+          		</div>	
+			</div>
+		</form>
 	</div>
 </body>
 </html>
