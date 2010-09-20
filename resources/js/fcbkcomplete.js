@@ -231,7 +231,7 @@ jQuery.facebooklist = function(elem, list, complete, ajax, height, filter, newel
             }
             if (event.keyCode == 40) {
 				removeFeedEvent();
-                if (typeof(nowFocusOn) == 'undefined' || nowFocusOn.length == 0 || nowFocusOn == null) {
+                if (!nowFocusOn || typeof(nowFocusOn) == 'undefined' || nowFocusOn.length == 0 || nowFocusOn == null) {
                     nowFocusOn = $(feed.children('li:visible:first'));
 					feed.get(0).scrollTop = 0;
                 }
@@ -282,7 +282,7 @@ jQuery.facebooklist = function(elem, list, complete, ajax, height, filter, newel
         li.appendChild(input);
         holder.appendChild(li);
         $(input).focus(function(){
-            complete.fadeIn('fast');
+            complete.fadeIn('fast');			
         });
         $(holder).click(function(){
             $(input).focus();

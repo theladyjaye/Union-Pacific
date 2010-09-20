@@ -2,10 +2,13 @@ $(function() {
 	
 	$(".jqmWindow").jqm();
 	
-	$.facebooklist('#stakeholders', '#preadded', '#facebook-auto',{url:'/api/search/users',cache:1}, 10, {userfilter:1,casesensetive:0});
+	$.facebooklist('#stakeholders', '#preadded', '#facebook-auto',{url:'/api/search/users',cache:1}, 10, {userfilter:0,casesensetive:0});
 
 	$("#nav-add-project").click(function() {
-		$("#frm-add-project")[0].reset();
+		var $frm = $("#frm-add-project");
+		
+		$frm[0].reset();
+		$frm.find(".holder .bit-box").remove();
 		$("#modal-add-project").jqmShow();
 		return false;
 	});
@@ -81,7 +84,7 @@ var app = $.sammy(function() {
 			}
 		});
 	}).get("#/project/:project", function(context) { // project
-		
+		change_page("project");
 	});
 	
 	/*.get("#/schedule", function() {
