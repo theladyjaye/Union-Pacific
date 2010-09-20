@@ -7,10 +7,29 @@ var couchdb    = require('../libs/node-couchdb/lib/couchdb'),
 	
 exports.endpoints = function(app)
 {
+	app.get('/:id', getProject);
 	app.get('/', getProjects);
+	
 	app.post('/', createProject);
 	app.post('/:id/checklist', addItem);
+	
 	app.del('/:id/checklist/:taskId', deleteItem);
+}
+
+function getProject(req, res, next)
+{
+	var project_id = req.params.id;
+	db.getDoc(encodeURIComponent(project_id), function(projectError, project)
+	{
+		if(projectError == null)
+		{
+			next({"ok":true, "project":project});
+		}
+		else
+		{
+			next({"ok":false, "message":"invalid project"});
+		}
+	});
 }
 
 function deleteItem(req, res, next)
