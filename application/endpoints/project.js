@@ -2,7 +2,8 @@ var couchdb    = require('../libs/node-couchdb/lib/couchdb'),
     client     = couchdb.createClient(5984, 'localhost'),
     db         = client.db('unionpacific'),
     formidable = require('formidable'),
-	Project    = require('../data/Project');
+	Project    = require('../data/Project'),
+	Task       = require('../data/Task');
 	
 exports.endpoints = function(app)
 {
@@ -10,8 +11,62 @@ exports.endpoints = function(app)
 	app.post('/', createProject);
 	
 	// Add Item
-	//app.post('/:id/:task', addItem);
-	//app.delete('/:id/:task', deleteItem);
+	app.post('/:id/checklist', addItem);
+	//app.del('/:id/checklist', deleteItem);
+}
+
+function addItem(req, res, next)
+{
+	if(req.headers["content-length"] > 0)
+	{
+		var form = req.form = new formidable.IncomingForm;
+		form.parse(req, function(err, fields, files)
+		{
+			var project_id = req.params.id;
+			
+			db.getDoc(encodeURIComponent(project_id), function(projectError, project)
+			{
+				if(projectError == null)
+				{
+					var task = new Task(fields.name.trim());
+					
+					if(typeof fields.category != "undefined")
+						task.category = fields.category.trim();
+						
+					task.generateId();
+					
+					for(var i in project.checklist)
+					{
+						var item = project.checklist[i];
+						
+						if(item._id == task._id)
+						{
+							next({"ok":false, "message":"item already exists in project"});
+							return;
+						}
+					}
+					
+					project.checklist.push(task);
+					
+					db.saveDoc(project, function(error, data)
+					{
+						if(error == null)
+							next({"ok":true, "id":data.id});
+						else
+							next({"ok":false, "message":"unable to add task to project"});
+					});
+				}
+				else
+				{
+					next({"ok":false, "message":"invalid project"});
+				}
+			});
+		});
+	}
+	else
+	{
+		next({"ok":false, "message":"invalid request"});
+	}
 }
 
 function getProjects(req, res, next)
@@ -44,7 +99,7 @@ function createProject(req, res, next)
 		form.parse(req, function(err, fields, files)
 		{
 			var project          = new Project();
-			project.name         = fields.name;
+			project.name         = fields.name.trim();
 			project.stakeholders = fields.stakeholders;
 			
 			if(typeof fields.groups != "undefined")

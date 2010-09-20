@@ -68,6 +68,7 @@ function removeFromGroup(req, res, next)
 
 function getGroupItems(req, res, next)
 {
+	
 	db.view("application", "search-users-by-name", {"include_docs":true, "startkey":req.params.name, "endkey":req.params.name+"\u9999"}, function(error, data)
 	{
 		if(error == null)

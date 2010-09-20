@@ -8,6 +8,7 @@ var Group = function() {
 Group.prototype.addTask = function(task)
 {
 	task.category = this.name;
+	task.generateId();
 	this.items.push(task);
 }
 

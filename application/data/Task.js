@@ -1,4 +1,5 @@
-module.exports = function Task(name)
+var hashlib = require("../libs/hashlib");
+var Task = function(name)
 {
 	this.name          = name ? name : null;
 	this.is_complete   = false; 
@@ -6,3 +7,10 @@ module.exports = function Task(name)
 	this.type          = "task";
 	this.created_on    = new Date();
 }
+
+Task.prototype.generateId = function()
+{
+	this._id = hashlib.md5(JSON.stringify({category:this.category, name:this.name}));
+}
+
+module.exports = Task;

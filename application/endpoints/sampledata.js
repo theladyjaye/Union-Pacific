@@ -138,6 +138,12 @@ function initialize(req, res, next)
 		g3.addTask(new Task("404 Handling"));
 	
 	
+	
+	p1.checklist = g1.items.concat(g2.items);
+	p2.checklist = g1.items.concat(g3.items);
+	p3.checklist = g2.items;
+	p4.checklist = g1.items;
+	
 	db.saveDoc(g1);
 	db.saveDoc(g2);
 	db.saveDoc(g3);
