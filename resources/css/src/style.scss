@@ -62,6 +62,29 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 	
 	// END DASHBOARD
 	
+	// PROJECT
+	#project {
+		.column {float: left; width: 640px;		
+			&.sidebar {width: 300px; margin-left: 20px;}
+			& .header {height: 80px; width: 100%;
+				& h1 {font-size: 36px; font-weight: bold; line-height: 50px;}
+				& .timestamp {position: relative; top: -10px; font-style: italic; color: $color_dark_gray; opacity: 0.3;}
+				& .btn-complete {float: right; font-size: 36px; padding: 22px 0 16px 0; width: 300px;}
+			}
+			& .body {background: $color_light_white; @include corner(); padding: 20px;}
+			
+			& .stakeholders {
+				& .title {background: $color_lighter_blue; color: $color_dark_gray; width: 320px; left: -30px; height: 40px; position: relative; text-align: center; line-height: 44px; font-size: 28px; margin-bottom: 10px; font-weight: bold; text-shadow: -1px -1px 1px $color_light_blue;
+					& .arrow {width: 0; height: 0; line-height: 0; border-bottom: 7px solid transparent; position: absolute; top: 40px;}
+					& .arrow-left {border-right: 10px solid $color_light_blue; left: 0;}
+					& .arrow-right {border-left: 10px solid $color_light_blue; left: 310px;}
+					
+					& .btn-add {color: $color_light_white}
+				}
+			}
+		}
+	}	
+	// END PROJECT
 	
 	// ADD PROJECT MODAL
 		#modal-add-project {background: #fff; @include corner(); @include boxshadow(rgba(0, 0, 0, 0.3), 0, 0, 3px); width: 572px; padding: 0; margin-left: -286px;
@@ -80,7 +103,7 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 			& #facebook-list {margin-top: 10px;					
 				& ul.holder {width: 400px;}
 				& ul.holder li.bit-box {background: $color_light_blue; @include corner(); border-color: $color_light_blue; color: #fff; margin: 1px 5px 0 0;
-					& a.closebutton {top: 7px;}
+					& a.closebutton {top: 7px; @include transition(none, 0, linear);}
 					& input {@include corner();}
 				}
 				& ul.holder li.bit-input input {font-size: 14px; position: relative; top: 2px;}
@@ -109,7 +132,7 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 // END ICONS	
 
 // BTN
-.btn {@include corner(); float: left; padding: 5px 10px 3px 10px; @include lineargradient(#fff, $color_light_white); color: $color_light_blue; font-size: 16px; font-weight: bold; line-height: 20px; text-transform: uppercase; border: 1px solid $color_light_white; @include boxshadow(rgba(0, 0, 0, 0.3), 0, 1px, 2px);
+.btn {@include corner(); float: left; padding: 5px 10px 3px 10px; @include lineargradient(#fff, $color_light_white); color: $color_light_blue; font-size: 16px; font-weight: bold; line-height: 20px; text-transform: uppercase; border: 1px solid $color_light_white; @include boxshadow(rgba(0, 0, 0, 0.3), 0, 1px, 2px); text-align: center;
 	&:hover {@include lineargradient($color_lighter_blue, $color_light_blue); color: #fff; border-color: $color_lighter_blue;}
 	&.disable {cursor: default; opacity: 0.4;
 		&:hover {@include lineargradient(#fff, $color_light_white); color: $color_light_blue; border-color: $color_light_white}
