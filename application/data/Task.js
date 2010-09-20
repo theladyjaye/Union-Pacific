@@ -10,7 +10,7 @@ var Task = function(name)
 
 Task.prototype.generateId = function()
 {
-	this._id = hashlib.md5(JSON.stringify({category:this.category, name:this.name}));
+	this._id = hashlib.md5(JSON.stringify({category:this.category.toLowerCase(), name:this.name.toLowerCase()}));
 }
 
 module.exports = Task;
