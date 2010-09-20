@@ -12,13 +12,15 @@ exports.endpoints = function(app)
 	
 	app.post('/', createProject);
 	app.post('/:id/checklist', addItem);
+	app.post('/:id/stakeholders', addStakeholder);
 	
 	app.del('/:id/checklist/:taskId', deleteItem);
+	app.del('/:id/stakeholders/:email.:tld', deleteStakeholder);
 }
 
 function getProject(req, res, next)
 {
-	var project_id = req.params.id;
+	var project_id = req.params.id.toLowerCase();
 	db.getDoc(encodeURIComponent(project_id), function(projectError, project)
 	{
 		if(projectError == null)
@@ -32,10 +34,119 @@ function getProject(req, res, next)
 	});
 }
 
+function addStakeholder(req, res, next)
+{
+	if(req.headers["content-length"] > 0)
+	{
+		var project_id = req.params.id.toLowerCase();
+		var form       = req.form = new formidable.IncomingForm;
+		
+		form.parse(req, function(err, fields, files)
+		{
+			db.getDoc(encodeURIComponent(project_id), function(projectError, project)
+			{
+				if(projectError == null)
+				{
+					var email = fields.email.trim();
+					
+					db.getDoc(email, function(userError, user)
+					{
+						if(userError == null)
+						{
+							for(var i in project.stakeholders)
+							{
+								var stakeholder = project.stakeholders[i];
+
+								if(stakeholder == email)
+								{
+									next({"ok":false, "message":"stakeholder already exists"});
+									return;
+								}
+							}
+							
+							project.stakeholders.push(email);
+							
+							db.saveDoc(project, function(error, data)
+							{
+								if(error == null)
+									next({"ok":true, "id":data.id, "rev":data.rev});
+								else
+									next({"ok":false, "message":"unable to add stakeholder to project"});
+							});
+						}
+						else
+						{
+							next({"ok":false, "message":"invalid user"});
+						}
+					});
+				}
+				else
+				{
+					next({"ok":false, "message":"invalid project"});
+				}
+			});
+		});
+	}
+	else
+	{
+		next({"ok":false, "message":"invalid request"});
+	}
+}
+
+function deleteStakeholder(req, res, next)
+{
+	var project_id = req.params.id.toLowerCase();
+	var email      = req.params.email.toLowerCase()+"."+req.params.tld.toLowerCase();
+	
+	db.getDoc(encodeURIComponent(project_id), function(projectError, project)
+	{
+		if(projectError == null)
+		{
+			var stakeholdersLength = project.stakeholders.length;
+			var targetIndex = -1;
+			var newStakeholders = [];
+			
+			for(var i = 0; i < stakeholdersLength; i++)
+			{
+				var stakeholder = project.stakeholders[i];
+				if(stakeholder != email)
+				{
+					newStakeholders.push(stakeholder);
+				}
+				else
+				{
+					targetIndex = i;
+				}
+			}
+			
+			if(targetIndex > -1)
+			{
+				project.stakeholders = newStakeholders;
+				
+				db.saveDoc(project, function(saveError, saveData)
+				{
+					if(saveError == null)
+						next({"ok":true, "id":saveData.id, "rev":saveData.rev});
+					else
+						next({"ok":false, "message":"failed remove stakeholder"});
+				});
+			}
+			else
+			{
+				next({"ok":false, "message":"stakeholder not found in project"});
+			}
+		}
+		else
+		{
+			next({"ok":false, "message":"invalid project"});
+		}
+	});
+}
+
 function deleteItem(req, res, next)
 {
-	var project_id = req.params.id;
-	var task_id    = req.params.taskId;
+	var project_id = req.params.id.toLowerCase();
+	var task_id    = req.params.taskId.toLowerCase();
 	
 	db.getDoc(encodeURIComponent(project_id), function(projectError, project)
 	{
@@ -64,7 +175,7 @@ function deleteItem(req, res, next)
 				db.saveDoc(project, function(saveError, saveData)
 				{
 					if(saveError == null)
-						next({"ok":true, "id":saveData.id});
+						next({"ok":true, "id":saveData.id, "rev":saveData.rev});
 					else
 						next({"ok":false, "message":"failed remove task"});
 				});
@@ -87,7 +198,7 @@ function addItem(req, res, next)
 		var form = req.form = new formidable.IncomingForm;
 		form.parse(req, function(err, fields, files)
 		{
-			var project_id = req.params.id;
+			var project_id = req.params.id.toLowerCase();
 			
 			db.getDoc(encodeURIComponent(project_id), function(projectError, project)
 			{
