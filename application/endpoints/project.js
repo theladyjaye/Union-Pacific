@@ -9,8 +9,6 @@ exports.endpoints = function(app)
 {
 	app.get('/', getProjects);
 	app.post('/', createProject);
-	
-	// Add Item
 	app.post('/:id/checklist', addItem);
 	app.del('/:id/checklist/:taskId', deleteItem);
 }
