@@ -10,7 +10,7 @@ html {overflow-y: scroll;}
 body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: $color_light_gray; @include lineargradient($color_light_white, $color_dark_white); background-attachment: fixed;}
     a {text-decoration: none; @include transition(all, 0.15s, ease-out); color: $color_light_blue;}
     a:active {position: relative; top: 1px;}
-	a:hover {color: #34d5f0;}
+	a:hover {color: $color_lighter_blue;}
 	ul {list-style: none;}
 	hr {clear: both}
 	hr.thick {border-width: 6px; border-color: #000;}
@@ -64,30 +64,59 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 	
 	
 	// ADD PROJECT MODAL
-		#modal-add-project {background: #fff; @include corner(); @include boxshadow(rgba(0, 0, 0, 0.3), 0, 0, 1px);
+		#modal-add-project {background: #fff; @include corner(); @include boxshadow(rgba(0, 0, 0, 0.3), 0, 0, 3px); width: 572px; padding: 0; margin-left: -286px;
+			& .header {width: 532px; background: $color_light_blue; color: $color_light_white; @include onecorner(5px, 'top', 'left'); @include onecorner(5px, 'top', 'right'); height: 32px; padding: 5px 20px;
+				& h2 {font-size: 26px; font-weight: bold; margin-bottom: 10px; float: left; color: #fff; line-height: 34px;}
+				& .btn-close {float: right; position: relative; top: 8px; color: $color_light_white; text-transform: uppercase;
+					&:hover {color: #fff;}
+				}
+			}
+			& .body {width: 552px; padding: 20px; float: left;}
 			& .field-item {float: left; clear: left;
-				& label {float: left; width: 100px; margin-right: 20px; font-weight: bold; text-transform: uppercase;}
-				& .input-field {float: left;}
+				& label {float: left; width: 100px; margin-right: 20px; font-weight: bold; text-transform: uppercase; position: relative; top: 19px; font-size: 16px;}
+				& label[for=name] {top: 9px;}
+				& .input-field {float: left; @include corner(); border: 1px solid rgba(0, 0, 0, 0.1); width: 400px; padding: 5px; font-size: 14px; @include boxshadow(rgba(0, 0, 0, 0.3), 0, 1px, 2px, inset);}
 			}
-			& #facebook-list {margin-top: 10px;}
-			& ul.holder li.bit-box {background: $color_light_blue; @include corner(); border-color: $color_light_blue; color: $color_light_white;
-				& input {@include corner();}
+			& #facebook-list {margin-top: 10px;					
+				& ul.holder {width: 400px;}
+				& ul.holder li.bit-box {background: $color_light_blue; @include corner(); border-color: $color_light_blue; color: #fff; margin: 1px 5px 0 0;
+					& a.closebutton {top: 7px;}
+					& input {@include corner();}
+				}
+				& ul.holder li.bit-input input {font-size: 14px; position: relative; top: 2px;}
 			}
+			& #facebook-auto {width: 400px; @include corner(); @include boxshadow(rgba(0, 0, 0, 0.3), 0, 0, 1px); border: 1px solid #f0f0f0; background: $color_light_white;
+				& ul li {font-weight: bold; border: 0;}
+				& ul li.auto-focus {background: $color_light_blue; color: $color_light_white; @include corner();}
+			}
+			
+			& .btn-add {margin: 20px 20px 0 0; float: right;}
 		}	
 	// END ADD PROJECT MODAL
 	
 // END PAGES
 
 // ICONS
+/*
 .icon {background: url('/www/resources/imgs/sprite-icons.png') no-repeat; width: 27px; height: 27px; float: left; display: block;}
 .icon.icon-wii {background-position: 0 0;}
 .icon.icon-ps3 {background-position: -28px 0;}
 .icon.icon-xbox360 {background-position: -56px 0;}
 .icon.icon-pc {background-position: -84px 0;}
 .icon.icon-logo {background-position: 0 -50px; width: 240px; height: 60px;}
+*/
 
 // END ICONS	
 
+// BTN
+.btn {@include corner(); float: left; padding: 5px 10px 3px 10px; @include lineargradient(#fff, $color_light_white); color: $color_light_blue; font-size: 16px; font-weight: bold; line-height: 20px; text-transform: uppercase; border: 1px solid $color_light_white; @include boxshadow(rgba(0, 0, 0, 0.3), 0, 1px, 2px);
+	&:hover {@include lineargradient($color_lighter_blue, $color_light_blue); color: #fff; border-color: $color_lighter_blue;}
+	&.disable {cursor: default; opacity: 0.4;
+		&:hover {@include lineargradient(#fff, $color_light_white); color: $color_light_blue; border-color: $color_light_white}
+		&:active {top: 0;}
+	}
+}
+// END BTN
 
 	
 

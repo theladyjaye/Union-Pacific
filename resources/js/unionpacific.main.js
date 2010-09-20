@@ -2,10 +2,32 @@ $(function() {
 	
 	$(".jqmWindow").jqm();
 	
-	$.facebooklist('#facebook-demo', '#preadded', '#facebook-auto',{url:'/api/search/users',cache:1}, 10, {userfilter:1,casesensetive:0});
+	$.facebooklist('#stakeholders', '#preadded', '#facebook-auto',{url:'/api/search/users',cache:1}, 10, {userfilter:1,casesensetive:0});
 
 	$("#nav-add-project").click(function() {
+		$("#frm-add-project")[0].reset();
 		$("#modal-add-project").jqmShow();
+		return false;
+	});
+
+	$("#frm-add-project").find("input[name=name]").keyup(function() {
+		var $btn_add = $("#frm-add-project").find(".btn-add");
+		if($(this).val() != "")
+		{
+			$btn_add.removeClass("disable");
+		}
+		else
+		{
+			$btn_add.addClass("disable");
+		}
+	}).end().find(".btn-submit").click(function() {
+		var $this = $(this);
+		
+		if(!$this.hasClass("disable"))
+		{
+			console.log($("#frm-add-project").serialize());
+		}
+		
 		return false;
 	});
 

@@ -231,7 +231,7 @@ jQuery.facebooklist = function(elem, list, complete, ajax, height, filter, newel
             }
             if (event.keyCode == 40) {
 				removeFeedEvent();
-                if (typeof(nowFocusOn) == 'undefined' || nowFocusOn.length == 0) {
+                if (typeof(nowFocusOn) == 'undefined' || nowFocusOn.length == 0 || nowFocusOn == null) {
                     nowFocusOn = $(feed.children('li:visible:first'));
 					feed.get(0).scrollTop = 0;
                 }

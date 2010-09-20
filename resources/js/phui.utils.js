@@ -46,7 +46,7 @@ phui.utils =
 		created.setSeconds(created_at.substr(17, 2));			
 
 		now.setHours(now.getHours() - 1);
-		var age_in_seconds = (created.getTime() - now.getTime()) / 1000;
+		var age_in_seconds = (now.getTime() - created.getTime()) / 1000;
 
 		var s = function(n) { 
 			return n == 1 ? '' : 's' 

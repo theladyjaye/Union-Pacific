@@ -32,26 +32,32 @@
 	</div>
 	
 	<div id="modal-add-project" class="jqmWindow">
-		<h2>Add Project</h2>
-		<form action="" method="post">
-			<div class="field-item">
-				<label for="name">Name</label>
-				<input type="text" name="name" class="input-field" />
-			</div>
-			<div class="field-item">
-				<label>Stakeholders:</label>
-				<div id="facebook-list" class="input-field">
-          			<input type="text" value="" id="facebook-demo" />
-	        	  	<ul id="preadded" style="display:none">     
-	        	  	</ul>
-	        	  	<div id="facebook-auto">
-	                    <div class="default">Type the name of a stakeholder</div> 
-	                    <ul id="feed">            
-	                    </ul>
-					</div>
-          		</div>	
-			</div>
-		</form>
+		<div class="header">
+			<h2>Add Project</h2>
+			<a href="#" class="btn-close jqmClose">Close</a>
+		</div>
+		<div class="body">
+			<form id="frm-add-project" action="" method="post">
+				<div class="field-item">
+					<label for="name">Name:</label>
+					<input type="text" name="name" class="input-field" maxlength="32" />
+				</div>
+				<div class="field-item">
+					<label>Stakeholders:</label>
+					<div id="facebook-list" class="input-field">
+	          			<input type="text" value="" id="stakeholders" />
+		        	  	<ul id="preadded" style="display:none">     
+		        	  	</ul>
+		        	  	<div id="facebook-auto">
+		                    <div class="default">Type the name of a stakeholder</div> 
+		                    <ul id="feed">            
+		                    </ul>
+						</div>
+	          		</div>	
+				</div>
+				<a href="#" class="btn btn-add btn-submit disable">+ Add Project</a>
+			</form>
+		</div>
 	</div>
 </body>
 </html>
