@@ -12,9 +12,57 @@ exports.endpoints = function(app)
 	
 	// Add Item
 	app.post('/:id/checklist', addItem);
-	//app.del('/:id/checklist', deleteItem);
+	app.del('/:id/checklist/:taskId', deleteItem);
 }
 
+function deleteItem(req, res, next)
+{
+	var project_id = req.params.id;
+	var task_id    = req.params.taskId;
+	
+	db.getDoc(encodeURIComponent(project_id), function(projectError, project)
+	{
+		if(projectError == null)
+		{
+			var checklistLength = project.checklist.length;
+			var targetIndex = -1;
+			var newChecklist = [];
+			
+			for(var i = 0; i < checklistLength; i++)
+			{
+				var task = project.checklist[i];
+				if(task._id != task_id)
+				{
+					newChecklist.push(task);
+				}
+				else
+				{
+					targetIndex = i;
+				}
+			}
+			
+			if(targetIndex > -1)
+			{
+				project.checklist = newChecklist;
+				db.saveDoc(project, function(saveError, saveData)
+				{
+					if(saveError == null)
+						next({"ok":true, "id":saveData.id});
+					else
+						next({"ok":false, "message":"failed remove task"});
+				});
+			}
+			else
+			{
+				next({"ok":false, "message":"task not found in project"});
+			}
+		}
+		else
+		{
+			next({"ok":false, "message":"invalid project"});
+		}
+	});
+}
 function addItem(req, res, next)
 {
 	if(req.headers["content-length"] > 0)
