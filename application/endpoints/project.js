@@ -54,7 +54,7 @@ function createProject(req, res, next)
 				
 				fields.groups.forEach(function(group)
 				{
-					// this is an async operation, so we gotta get a bit fancy...
+					// this is a totally async operation, so we gotta get a bit fancy, inside out time.
 					db.getDoc(encodeURIComponent(group), function(groupDocError, groupDoc)
 					{
 						if(groupDocError == null)
@@ -67,13 +67,9 @@ function createProject(req, res, next)
 							db.saveDoc(project, function(error, data)
 							{
 								if(error == null)
-								{
 									next({"ok":true, "id":data.id});
-								}
 								else
-								{
 									next({"ok":false, "message":"unable to save project"});
-								}
 							});
 						}
 					})
