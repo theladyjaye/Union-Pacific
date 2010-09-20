@@ -115,28 +115,27 @@ function initialize(req, res, next)
 	var g1       = new Group();
 		g1._id   = 'group/html';
 		g1.name  = "Html";
-		g1.items = [new Task("Check title tags"),
-		            new Task("Check Navigation"),
-		            new Task("Displays properly in IE 6"),
-		            new Task("Displays properly in IE 7"),
-		            new Task("Displays properly in IE 8"),
-		            new Task("Displays properly in Firefox (win)"),
-		            new Task("Displays properly in Firefox (mac)"),
-		            new Task("Displays properly in Chrome (win)"),
-		            new Task("Displays properly in Chrome (mac)"),
-		            new Task("Displays properly in Safari (mac)")];
-	
+		g1.addTask(new Task("Check title tags"));
+		g1.addTask(new Task("Check Navigation"));
+		g1.addTask(new Task("Displays properly in IE 6"));
+		g1.addTask(new Task("Displays properly in IE 7"));
+		g1.addTask(new Task("Displays properly in IE 8"));
+		g1.addTask(new Task("Displays properly in Firefox (win)"));
+		g1.addTask(new Task("Displays properly in Firefox (mac)"));
+		g1.addTask(new Task("Displays properly in Chrome (win)"));
+		g1.addTask(new Task("Displays properly in Chrome (mac)"));
+		g1.addTask(new Task("Displays properly in Safari (mac)"));
 	
 	var g2       = new Group();
 		g2._id   = 'group/flash';
 		g2.name  = "Flash";
-		g2.items = [new Task("Check title tags"),
-		            new Task("Check Navigation")];
+		g2.addTask(new Task("Check title tags"));
+		g2.addTask(new Task("Check Navigation"));
 	
 	var g3       = new Group();
 		g3._id   = 'group/server';
 		g3.name  = "Server";
-		g3.items = [new Task("404 Handling")];
+		g3.addTask(new Task("404 Handling"));
 	
 	
 	db.saveDoc(g1);
