@@ -9,7 +9,9 @@ exports.endpoints = function(app)
 
 function getUsers(req, res, next)
 {
-	db.view("application", "search-users-by-name", {"include_docs":true, "startkey":req.params.name, "endkey":req.params.name+"\u9999"}, function(error, data)
+	var name = req.params.name.toLowerCase();
+	
+	db.view("application", "search-users-by-name", {"include_docs":true, "startkey":name, "endkey":name+"\u9999"}, function(error, data)
 	{
 		if(error == null)
 		{
@@ -21,6 +23,7 @@ function getUsers(req, res, next)
 			});
 			
 			next({"ok":true, "matches":results});
+			
 		}
 		else
 		{

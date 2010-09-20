@@ -4,10 +4,10 @@ var couchdb    = require('../libs/node-couchdb/lib/couchdb'),
     sys        = require('sys'),
 	spawn      = require('child_process').spawn,
 	User       = require('../data/User'),
-	Project    = require('../data/Project');
-	//Group      = require('../data/Group');
-	//game     = require('../data/game'),
-	//user     = require('../data/user');
+	Project    = require('../data/Project'),
+	Group      = require('../data/Group'),
+	Task       = require('../data/Task');
+	
 
 exports.endpoints = function(app)
 {
@@ -112,12 +112,37 @@ function initialize(req, res, next)
 		p4.stakeholders = [u8._id, u7._id, u10._id];
 		
 	
-	/*var g1 = new Group();
-	    g1."group/html";
-	    g1.checklist = 
-	*/
-
-
+	var g1       = new Group();
+		g1._id   = 'group/html';
+		g1.name  = "Html";
+		g1.items = [new Task("Check title tags"),
+		            new Task("Check Navigation"),
+		            new Task("Displays properly in IE 6"),
+		            new Task("Displays properly in IE 7"),
+		            new Task("Displays properly in IE 8"),
+		            new Task("Displays properly in Firefox (win)"),
+		            new Task("Displays properly in Firefox (mac)"),
+		            new Task("Displays properly in Chrome (win)"),
+		            new Task("Displays properly in Chrome (mac)"),
+		            new Task("Displays properly in Safari (mac)")];
+	
+	
+	var g2       = new Group();
+		g2._id   = 'group/flash';
+		g2.name  = "Flash";
+		g2.items = [new Task("Check title tags"),
+		            new Task("Check Navigation")];
+	
+	var g3       = new Group();
+		g3._id   = 'group/server';
+		g3.name  = "Server";
+		g3.items = [new Task("404 Handling")];
+	
+	
+	db.saveDoc(g1);
+	db.saveDoc(g2);
+	db.saveDoc(g3);
+	
 	// Users
 	db.saveDoc(u1);
 	db.saveDoc(u2);
