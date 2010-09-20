@@ -8,7 +8,6 @@ var couchdb    = require('../libs/node-couchdb/lib/couchdb'),
 exports.endpoints = function(app)
 {
 	app.get('/', getGroups);
-	
 	app.get('/:name', getGroupItems);
 	// Disabled until 1.1
 	//app.post('/', createGroup);
