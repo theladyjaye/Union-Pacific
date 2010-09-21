@@ -15,7 +15,9 @@ exports.endpoints = function(app)
 	app.post('/:id/stakeholders', addStakeholder);
 	
 	app.del('/:id/checklist/:taskId', deleteItem);
-	app.del('/:id/stakeholders/:email.:tld', deleteStakeholder);
+	
+	// the router sees '.' as a the file extension, so we will just run with it rather than regexing it
+	app.del('/:id/stakeholders/:email.:tld', deleteStakeholder); 
 }
 
 function getProject(req, res, next)
