@@ -216,6 +216,7 @@ $(function() {
 		var $frm = $("#frm-add-task");
 		
 		$frm[0].reset();
+		$frm.find(".input-category").hide();
 		$("#modal-add-task").jqmShow();
 		
 		return false;
