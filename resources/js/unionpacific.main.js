@@ -76,7 +76,7 @@ $(function() {
 			$task = $this.parents(".task"),
 			task_id = $task.attr("id"),
 			project_id = document.location.hash.split("/").slice(-1),
-			task_len = $this.find(".task").length;
+			task_len = $("#project").find(".task").length;
 
 		// can only delete a task if there are more than one tasks
 		if(task_len > 1)
