@@ -8,17 +8,81 @@ var couchdb    = require('../libs/node-couchdb/lib/couchdb'),
 exports.endpoints = function(app)
 {
 	app.get('/:id', getProject);
+	
 	app.get('/', getProjects);
 	
 	app.post('/', createProject);
 	app.post('/:id/checklist', addItem);
 	app.post('/:id/stakeholders', addStakeholder);
+	app.post('/:id/checklist/:taskId/complete', taskComplete);
+	app.post('/:id/checklist/:taskId/incomplete', taskIncomplete);
 	
 	app.del('/:id/checklist/:taskId', deleteItem);
 	
 	// the router sees '.' as a the file extension, so we will just run with it rather than regexing it
 	app.del('/:id/stakeholders/:email.:tld', deleteStakeholder); 
 }
+
+
+function taskIncomplete(req, res, next)
+{
+	var project_id = req.params.id.toLowerCase();
+	var task_id    = req.params.taskId.toLowerCase();
+	changeTaskStatus(project_id, task_id, false, next);
+}
+
+function taskComplete(req, res, next)
+{
+	var project_id = req.params.id.toLowerCase();
+	var task_id    = req.params.taskId.toLowerCase();
+	changeTaskStatus(project_id, task_id, true, next);
+}
+
+function changeTaskStatus(project_id, task_id, to_status, next)
+{
+	// here is where this structure sorta gets us... This for loop is meh...
+	// also we are forced to resave the whole object... bla...
+	db.getDoc(encodeURIComponent(project_id), function(projectError, project)
+	{
+		if(projectError == null)
+		{
+			var didUpdateTask = false;
+			for(var i in project.checklist)
+			{
+				var task = project.checklist[i];
+				
+				if(task._id == task_id)
+				{
+					task.is_complete = to_status;
+					didUpdateTask = true;
+					break;
+				}
+			}
+			
+			if(didUpdateTask)
+			{
+				db.saveDoc(project, function(error, data)
+				{
+					if(error == null)
+						next({"ok":true, "id":data.id, "rev":data.rev});
+					else
+						next({"ok":false, "message":"unable to update task status"});
+				});
+			}
+			else
+			{
+				next({"ok":false, "message":"invalid task"});
+			}
+		}
+		else
+		{
+			next({"ok":false, "message":"invalid project"});
+		}
+	});
+}
+
+
+
 
 function getProject(req, res, next)
 {
