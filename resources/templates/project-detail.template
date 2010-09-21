@@ -21,7 +21,7 @@
 </div>
 <div class="column sidebar">
 	<div class="header">
-		<a href="#" class="btn btn-complete">Complete</a>
+		<a id="btn-complete" href="#" class="btn btn-complete disable">Complete</a>
 	</div>
 	<div class="body">
 		<div class="stakeholders">

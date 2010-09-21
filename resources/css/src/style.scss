@@ -81,12 +81,12 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 					&:nth-child(even) .task-details {background: #ececec;}
 					&.complete .task-details {background: $color_light_blue; color: $color_light_white;}
 					
-					& .btn-delete {position: absolute; left: 7px; top: 5px; display: none; font-weight: bold;}
+					& .btn-delete {position: absolute; left: 7px; top: 5px; visibility: hidden; font-weight: bold;}
 					&:hover {
-						& .btn-delete {display: block;}
+						& .btn-delete {visibility: visible;}
 					}
 					& .title {float: left; margin-left: 5px; width: 370px;}
-					& .category {float: left; width: 100px;}
+					& .category {float: left; width: 100px; cursor: pointer;}
 					& .is_complete {float: left;}					
 					&.complete .is_complete {color: $color_light_white;}
 					

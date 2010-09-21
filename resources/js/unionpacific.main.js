@@ -1,16 +1,15 @@
 $(function() {		
 	// setup jq modal
 	$(".jqmWindow").jqm();
-	
-	// setup user autocomplete
-//	$.facebooklist('.fbk-stakeholders', '#preadded', '#facebook-auto',{url:'/api/search/users',cache:1}, 10, {userfilter:0,casesensetive:0});
-	
+
+	// stakeholders fbk autocomplete for project form
 	var t5 = new $.TextboxList('#fbk-stakeholders-project', {unique: true, plugins: {autocomplete: {
 						minLength: 1,
 						queryRemote: true,
 						remote: {url: '/api/search/users'}
 					}}});
-	
+					
+	// stakeholders fbk autocomplete for additional stakeholders form
 	var t6 = new $.TextboxList('#fbk-add-stakeholders', {unique: true, plugins: {autocomplete: {
 						minLength: 1,
 						queryRemote: true,
@@ -159,6 +158,7 @@ $(function() {
 				}
 			});
 		}
+		return false;
 	});
 
 	// dd category change
@@ -186,10 +186,17 @@ $(function() {
 		
 		$.post("/api/projects/" + project_id + "/checklist/" + task_id + "/" + status, function(response) {
 			$task.toggleClass("complete");
+			check_for_completion();			
 		});
 		
 		return false;
-	}).delegate(".task .btn-delete", "click", function() {
+	}).delegate("#btn-complete", "click", function() {
+		if(!$(this).hasClass("disable"))
+		{
+			// fire complete emails
+		}
+		return false;
+	}).delegate(".task .btn-delete", "click", function() { // delete task
 		var $this = $(this),
 			$task = $this.parents(".task"),
 			task_id = $task.attr("id"),
@@ -207,10 +214,38 @@ $(function() {
 						"opacity": 0
 					}, 200, function() {
 						$(this).remove();
+						check_for_completion();	
 					});
 				}
 			});
 		}
+		return false;
+	}).delegate(".category", "click", function() {
+		var category = $(this).text().toLowerCase(),
+			$task_list = $("#project ul"),
+			$task_list_items = $task_list.find("li.task");
+		
+		if($task_list.hasClass("filtered"))
+		{
+			$task_list_items.fadeIn();
+			$task_list.removeClass("filtered");
+		}
+		else
+		{		
+			$task_list_items.each(function() {
+				if($(this).find(".category").text().toLowerCase() == category)
+				{
+					$(this).fadeIn();
+				}
+				else
+				{
+					$(this).fadeOut();
+				}
+			});
+			
+			$task_list.addClass("filtered");
+		}
+	
 		return false;
 	}).delegate(".btn-add-task", "click", function() {
 		var $frm = $("#frm-add-task");
@@ -252,7 +287,33 @@ $(function() {
 	// run sammy
 	app.run("#/dashboard");
 	
+	
+	
 });
+
+// check all tasks in task list to see if project is completed
+function check_for_completion()
+{
+	var $btn_complete = $("#btn-complete"),
+		$tasks = $("#project .tasks li.task"),
+		$complete_tasks = $("#project .tasks li.task.complete"),
+		task_len = $tasks.length,
+		complete_task_len = $complete_tasks.length,
+		is_complete = false;
+		
+	if(complete_task_len >= task_len)
+	{
+		$btn_complete.removeClass("disable");
+		is_complete = true;
+	}
+	else
+	{
+		$btn_complete.addClass("disable");
+		is_complete = false;
+	}
+	
+	return is_complete;
+}
 
 function change_page(page_id)
 {
@@ -310,6 +371,8 @@ var app = $.sammy(function() {
 					"complete": function() {
 						// setup categories
 						utils.setup_categories();
+						// check if all tasks are completed
+						check_for_completion();
 					}
 				});
 			}
