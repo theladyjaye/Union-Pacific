@@ -2,7 +2,8 @@
 @import "config";
 @import "helper";
 @import "modal";
-@import "fcbkcomplete";
+@import "TextboxList";
+@import "TextboxList.AutoComplete";
 
 
 // BASE
@@ -71,7 +72,8 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 				& .timestamp {position: relative; top: -10px; font-style: italic; color: $color_dark_gray; opacity: 0.3;}
 				& .btn-complete {float: right; font-size: 36px; padding: 22px 0 16px 0; width: 300px;}
 			}
-			& .body {background: $color_light_white; @include corner(); padding: 20px;}
+			& .body {background: $color_light_white; @include corner(); padding: 20px; width: 600px; float: left;}
+			&.sidebar .body {width: 260px;}
 			
 			& .tasks {
 				li.task {margin-bottom: 3px; position: relative; float: left; clear: left; left: -20px;
@@ -83,8 +85,8 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 					&:hover {
 						& .btn-delete {display: block;}
 					}
-					& .title {float: left; margin-left: 5px; width: 390px;}
-					& .category {float: left; width: 80px;}
+					& .title {float: left; margin-left: 5px; width: 370px;}
+					& .category {float: left; width: 100px;}
 					& .is_complete {float: left;}					
 					&.complete .is_complete {color: $color_light_white;}
 					
@@ -92,6 +94,9 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 					& .mark-as-incomplete {display: none;}
 					&.complete .mark-as-complete {display: none;}
 					&.complete .mark-as-incomplete {display: block;}
+				}
+				.btn-add-task {float:left; clear: left; width: 590px; display: block; padding: 5px; @include corner(); background: $color_light_blue; color: $color_light_white; text-align: center; font-weight: bold; font-size: 18px; text-shadow: -1px -1px 1px $color_light_blue;
+					&:hover {background: $color_lighter_blue;}
 				}
 			}
 			
@@ -103,13 +108,18 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 					
 					& .btn-add {color: $color_light_white}
 				}
+				
+				& li {
+					.btn-delete {visibility: hidden;}
+					&:hover .btn-delete {visibility: visible;}
+				}
 			}
 		}
 	}	
 	// END PROJECT
 	
-	// ADD PROJECT MODAL
-		#modal-add-project {background: #fff; @include corner(); @include boxshadow(rgba(0, 0, 0, 0.3), 0, 0, 3px); width: 572px; padding: 0; margin-left: -286px;
+	// MODAL
+		.jqmWindow {background: #fff; @include corner(); @include boxshadow(rgba(0, 0, 0, 0.3), 0, 0, 3px); width: 572px; padding: 0; margin-left: -286px;
 			& .header {width: 532px; background: $color_light_blue; color: $color_light_white; @include onecorner(5px, 'top', 'left'); @include onecorner(5px, 'top', 'right'); height: 32px; padding: 5px 20px;
 				& h2 {font-size: 26px; font-weight: bold; margin-bottom: 10px; float: left; color: #fff; line-height: 34px;}
 				& .btn-close {float: right; position: relative; top: 8px; color: $color_light_white; text-transform: uppercase;
@@ -120,29 +130,25 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 			& .field-item {float: left; clear: left;
 				& label {float: left; width: 100px; margin-right: 20px; font-weight: bold; text-transform: uppercase; position: relative; top: 19px; font-size: 16px;}
 				& label[for=name] {top: 9px;}
+				& .textboxlist-bits,
 				& .input-field {float: left; @include corner(); border: 1px solid rgba(0, 0, 0, 0.1); width: 400px; padding: 5px; font-size: 14px; @include boxshadow(rgba(0, 0, 0, 0.3), 0, 1px, 2px, inset);}
+				
+				& .textboxlist-bits {float: none; width: 410px; padding: 0; margin-top: 12px;}
+				& .textboxlist-bit {margin: 2px 5px 3px 2px;}
 			}
-			& #facebook-list {margin-top: 10px;					
-				& ul.holder {width: 400px;}
-				& ul.holder li.bit-box {background: $color_light_blue; @include corner(); border-color: $color_light_blue; color: #fff; margin: 1px 5px 0 0;
-					& a.closebutton {top: 7px; @include transition(none, 0, linear);}
-					& input {@include corner();}
-				}
-				& ul.holder li.bit-input input {font-size: 14px; position: relative; top: 2px;}
-			}
-			& #facebook-auto {width: 400px; @include corner(); @include boxshadow(rgba(0, 0, 0, 0.3), 0, 0, 1px); border: 1px solid #f0f0f0; background: $color_light_white; z-index: 9999;
-				& ul li {font-weight: bold; border: 0;}
-				& ul li.auto-focus {background: $color_light_blue; color: $color_light_white; @include corner();}
-			}
-			
+
 			& .checkbox-grouping {position: relative; top: 17px; font-size: 16px; line-height: 16px; width: 400px;}
 			
 			& .field-submit {margin: 20px 20px 0 0; float: right;}
 			& .btn-add {}
+			
+			& #dd-category {float: left; margin-top: 18px;}
+			& .field-item .input-category {display: none; float: left; width: 250px; margin: 13px 0 0 4px;}
 		}	
-	// END ADD PROJECT MODAL
+	// END MODAL
 	
 // END PAGES
+
 
 // ICONS
 /*

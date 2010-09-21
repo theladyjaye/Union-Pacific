@@ -3,7 +3,20 @@ $(function() {
 	$(".jqmWindow").jqm();
 	
 	// setup user autocomplete
-	$.facebooklist('#stakeholders', '#preadded', '#facebook-auto',{url:'/api/search/users',cache:1}, 10, {userfilter:0,casesensetive:0});
+//	$.facebooklist('.fbk-stakeholders', '#preadded', '#facebook-auto',{url:'/api/search/users',cache:1}, 10, {userfilter:0,casesensetive:0});
+	
+	var t5 = new $.TextboxList('#fbk-stakeholders-project', {unique: true, plugins: {autocomplete: {
+						minLength: 1,
+						queryRemote: true,
+						remote: {url: '/api/search/users'}
+					}}});
+	
+	var t6 = new $.TextboxList('#fbk-add-stakeholders', {unique: true, plugins: {autocomplete: {
+						minLength: 1,
+						queryRemote: true,
+						remote: {url: '/api/search/users'}
+					}}});
+
 
 	// add project navigation
 	$("#nav-add-project").click(function() {
@@ -19,6 +32,8 @@ $(function() {
 	$.get("/api/groups", function(json) {
 		var output = [],
 			group = {};
+		
+		utils.categories = json.groups;
 		
 		for(var i = 0, len = json.groups.length; i < len; i++)
 		{
@@ -45,7 +60,10 @@ $(function() {
 		
 		if(!$this.hasClass("disable"))
 		{
-			$.post("/api/projects", $("#frm-add-project").serialize(), function(response) {
+			var obj = phui.utils.querystring_to_object($("#frm-add-project").serialize());
+			obj.stakeholders = obj.stakeholders.split(","); // turn stakeholders into array
+			
+			$.post("/api/projects", obj, function(response) {
 				if(response.ok)
 				{
 					// redirect to new project
@@ -56,6 +74,106 @@ $(function() {
 		}
 		
 		return false;
+	});
+	
+	// add task form functionality
+	$("#frm-add-task").find("input[name=name]").keyup(function() {
+		var $btn_add = $("#frm-add-task").find(".btn-add");
+		if($(this).val() != "")
+		{
+			$btn_add.removeClass("disable");
+		}
+		else
+		{
+			$btn_add.addClass("disable");
+		}
+	}).end().find(".btn-submit").click(function() {
+		var $this = $(this),
+			project_id = document.location.hash.split("/").slice(-1);
+		
+		if(!$this.hasClass("disable"))
+		{
+			
+			var $frm = $("#frm-add-task"),
+				$dd_category = $("#dd-category"),
+				obj = {"name": $frm.find("input[name=name]").val()};
+
+			if($dd_category.val() == -1)
+			{
+				var category = $frm.find(".input-category").val();
+				obj.category = category || "Generic";
+			}
+			else
+			{
+				obj.category = $dd_category.val();
+			}
+			
+			
+			$.post("/api/projects/" + project_id + "/checklist", obj, function(response) {
+				if(response.ok)
+				{
+					// add task to list
+					var li = '<li id="' + response.id + '" class="task"><a href="#" class="btn-delete">x</a><div class="task-details"><span class="title">' + obj.name + '</span><span class="category">' + obj.category + '</span><a href="#" class="is_complete"><span class="mark-as-complete">mark as complete</span><span class="mark-as-incomplete">mark as incomplete</span></a></div></li>';
+					
+					$(li).insertBefore("#project .tasks li:last");
+					
+					// add new category to list
+					//utils.categories.push({response.id: obj.category});
+					
+					$(".jqmWindow").jqmHide();
+				}
+			});
+		}
+		
+		return false;
+	});
+
+	$("#frm-add-stakeholders").find(".btn-submit").click(function() {
+		var $frm = $("#frm-add-stakeholders"),
+			project_id = document.location.hash.split("/").slice(-1);
+		
+		var obj = phui.utils.querystring_to_object($frm.serialize());
+		obj.stakeholders = obj.stakeholders.split(","); // turn stakeholders into array
+		
+		if(obj.stakeholders)
+		{
+			add_stakeholder(obj.stakeholders);
+		}
+		
+		function add_stakeholder(stakeholders)
+		{
+			$.post("/api/projects/" + project_id + "/stakeholders", {"email": stakeholders.pop()}, function(response) {
+				// add to stakeholder project list
+				if(response.ok)
+				{
+					$("#project .stakeholders ul").append('<li><a href="#" class="btn-delete">x</a> <span class="email">' + response.email + '</span></li>');
+				}
+				
+				if(stakeholders.length)
+				{					
+					add_stakeholder(stakeholders);
+				}
+				else
+				{
+					$("#modal-add-stakeholders").jqmHide();
+				}
+			});
+		}
+	});
+
+	// dd category change
+	$("#dd-category").change(function() {
+		var $this = $(this),
+			$input_category = $this.next(".input-category");
+		
+		if($this.val() == "-1")
+		{
+			$input_category.show().focus();			
+		}
+		else
+		{
+			$input_category.hide();
+		}
 	});
 
 	// mark task as complete || incomplete
@@ -94,6 +212,40 @@ $(function() {
 			});
 		}
 		return false;
+	}).delegate(".btn-add-task", "click", function() {
+		var $frm = $("#frm-add-task");
+		
+		$frm[0].reset();
+		$("#modal-add-task").jqmShow();
+		
+		return false;
+	}).delegate(".btn-add-stakeholders", "click", function() {
+		var $frm = $("#frm-add-stakeholders");
+		
+		$frm[0].reset();
+		$("#modal-add-stakeholders").jqmShow();
+		
+		return false;
+	}).delegate(".stakeholders .btn-delete", "click", function() { // delete stakeholder
+		var $this = $(this),
+			$li = $this.parents("li"),
+			$email = $li.find(".email"),
+			email = $email.text(),
+			project_id = document.location.hash.split("/").slice(-1);
+			
+		$.ajax({
+			url: "/api/projects/" + project_id + "/stakeholders/" + email,
+			type: "DELETE",
+			success: function(response) {
+				$li.animate({
+					"opacity": 0
+				}, 200, function() {
+					$(this).remove();
+				});
+			}
+		});	
+	
+		return false;	
 	});
 
 	// run sammy
@@ -155,52 +307,13 @@ var app = $.sammy(function() {
 					"name": "project-detail",
 					"data": json.project,
 					"complete": function() {
-						
+						// setup categories
+						utils.setup_categories();
 					}
 				});
 			}
 		});
 	});
-	
-	/*.get("#/schedule", function() {
-		// reset form
-		$("#frm-new-game")[0].reset();
-		
-		$.getJSON("/games", function(json) {
-			if(json.ok && json.games)
-			{
-				var $dd_game = $("#dd-game").html("");
-				
-				for(var i = 0, len = json.games.length, game; i < len; i++)
-				{
-					game = json.games[i];
-
-					$("<option />", {
-						"value": game._id.split("/")[1],
-						"html": game.label + " | " + utils.get_console(game.platform).toUpperCase()
-					}).appendTo($dd_game);
-				}
-				change_page("schedule");			
-			}
-		});
-	}).get("#/profile", function() {
-		$.post("/matches/scheduled", {username: "xXHitmanXx"}, function(json) {
-			if(json.ok)
-			{
-				$("#profile .game-table").html("").render_template({
-					"name": "match",
-					"path": template_path,
-					"data": {"matches": json.matches,
-							 "is_profile": true
-							},
-					"complete": function() {
-						change_page("profile");			
-					}
-				});
-			}
-		}, 'json');
-	});
-	*/
 });
 
 // UTILS
@@ -216,6 +329,20 @@ var utils =
 			len = stakeholders.length;
 		
 		return (len > max) ? "plus " + (len - max) + " more" : "";
+	},
+	categories: [],
+	setup_categories: function()
+	{
+		var categories = [];
+		
+		for(var i = 0, len = utils.categories.length; i < len; i++)
+		{
+			categories.push('<option value="' + utils.categories[i].name + '">' + utils.categories[i].name + '</option>');			
+		}
+		
+		categories.push('<option value="-1">Create New Category</option>');
+		
+		$("#dd-category").html(categories.join(""));
 	}
 };
 // END UTILS

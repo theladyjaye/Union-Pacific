@@ -10,7 +10,11 @@
 	<script src="resources/js/sammy.min.js"></script>
 	<script src="resources/js/jquery.render_template.js"></script>
 	<script src="resources/js/jqModal.js"></script>
-	<script src="resources/js/fcbkcomplete.js"></script>
+<!--	<script src="resources/js/fcbkcomplete.js"></script>-->
+	<script src="resources/js/GrowingInput.js"></script>
+	<script src="resources/js/TextboxList.js"></script>
+	<script src="resources/js/TextboxList.Autocomplete.js"></script>
+
 	<script src="resources/js/phui.utils.js"></script>
 	<script src="resources/js/unionpacific.main.js"></script>
 </head>
@@ -46,16 +50,9 @@
 				</div>
 				<div class="field-item">
 					<label>Stakeholders:</label>
-					<div id="facebook-list" class="input-field">
-	          			<input type="text" value="" id="stakeholders" />
-		        	  	<ul id="preadded" style="display:none">     
-		        	  	</ul>
-		        	  	<div id="facebook-auto">
-		                    <div class="default">Type the name of a stakeholder</div> 
-		                    <ul id="feed">            
-		                    </ul>
-						</div>
-	          		</div>	
+					<div class="form_friends">
+						<input type="text" name="stakeholders" value="" id="fbk-stakeholders-project" class="fbk-stakeholders" />
+					</div>	
 				</div>
 				<div class="field-item">
 					<label for="groups">Task Presets:</label>
@@ -65,6 +62,53 @@
 				</div>
 				<div class="field-item field-submit">
 					<a href="#" class="btn btn-add btn-submit disable">+ Add Project</a>
+				</div>
+			</form>
+		</div>
+	</div>
+	
+	<div id="modal-add-task" class="jqmWindow">
+		<div class="header">
+			<h2>Add Task</h2>
+			<a href="#" class="btn-close jqmClose">Close</a>
+		</div>
+		<div class="body">
+			<form id="frm-add-task" action="" method="post">
+				<div class="field-item">
+					<label for="name">Name:</label>
+					<input type="text" name="name" class="input-field" maxlength="32" />
+				</div>
+				<div class="field-item">
+					<label>Category:</label>
+					<select id="dd-category" name="category">
+
+					</select>
+					<input class="input-category input-field" type="text" name="category" maxlength="14" />
+				</div>
+				<div class="field-item field-submit">
+					<a href="#" class="btn btn-add btn-submit disable">+ Add Task</a>
+				</div>
+			</form>
+		</div>
+	</div>
+	
+	
+	<div id="modal-add-stakeholders" class="jqmWindow">
+		<div class="header">
+			<h2>Add Stakeholders</h2>
+			<a href="#" class="btn-close jqmClose">Close</a>
+		</div>
+		<div class="body">
+			<form id="frm-add-stakeholders" action="" method="post">
+				<div class="field-item">
+					<label>Stakeholders:</label>
+					<div class="form_friends">
+						<input type="text" name="stakeholders" value="" id="fbk-add-stakeholders" class="fbk-stakeholders" />
+					</div>
+						
+				</div>
+				<div class="field-item field-submit">
+					<a href="#" class="btn btn-add btn-submit">+ Add Stakeholders</a>
 				</div>
 			</form>
 		</div>
