@@ -1,0 +1,40 @@
+<div class="column">
+	<div class="header">
+		<h1>${name}</h1>
+		<p class="timestamp">Created ${phui.utils.elapsed_time(created_on)}</p>
+	</div>
+	<div class="body">
+ 		<ul class="tasks">
+			{{each checklist}}
+ 				<li id="${_id}" class="task {{if is_complete}}complete{{/if}}">
+ 					<a href="#" class="btn-delete">x</a>
+					<div class="task-details">
+						<span class="title">${name}</span>
+						<span class="category">${category}</span>
+						<a href="#" class="is_complete"><span class="mark-as-complete">mark as complete</span><span class="mark-as-incomplete">mark as incomplete</span></a>
+					</div>
+ 				</li>			
+			{{/each}}
+ 			<li><a href="#">Add task</a></li>
+ 		</ul>
+	</div>
+</div>
+<div class="column sidebar">
+	<div class="header">
+		<a href="#" class="btn btn-complete">Complete</a>
+	</div>
+	<div class="body">
+		<div class="stakeholders">
+			<div class="title">
+				<p>Stakeholders <a href="#" class="btn-add">+</a></p>
+				<span class="arrow arrow-left"></span>
+				<span class="arrow arrow-right"></span>
+			</div>
+			<ul>
+				{{each stakeholders}}
+			        <li>${this}</li>
+				{{/each}}
+			</ul>
+		</div>
+	</div>
+</div>

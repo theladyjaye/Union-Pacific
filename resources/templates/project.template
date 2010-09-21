@@ -1,5 +1,5 @@
 <li>
-	<a href="#/project/${utils.sanitize_project_name(name)}">
+	<a href="#/project/${_id}">
 		<span class="title">${name}</span>
 		<span class="timestamp">Created ${phui.utils.elapsed_time(created_on)}</span>
 		<span class="stakeholders-title">Stakeholders</span>

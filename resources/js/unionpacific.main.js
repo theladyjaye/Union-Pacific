@@ -1,9 +1,11 @@
 $(function() {		
-	
+	// setup jq modal
 	$(".jqmWindow").jqm();
 	
+	// setup user autocomplete
 	$.facebooklist('#stakeholders', '#preadded', '#facebook-auto',{url:'/api/search/users',cache:1}, 10, {userfilter:0,casesensetive:0});
 
+	// add project navigation
 	$("#nav-add-project").click(function() {
 		var $frm = $("#frm-add-project");
 		
@@ -13,6 +15,21 @@ $(function() {
 		return false;
 	});
 
+	// set up groups in add project form
+	$.get("/api/groups", function(json) {
+		var output = [],
+			group = {};
+		
+		for(var i = 0, len = json.groups.length; i < len; i++)
+		{
+			group = json.groups[i];
+			output.push('<input type="checkbox" name="groups" value="' + group._id + '" />' + group.name);
+		}
+		
+		$("#add-project-groups").html(output.join(""));
+	});
+
+	// add project form functionality
 	$("#frm-add-project").find("input[name=name]").keyup(function() {
 		var $btn_add = $("#frm-add-project").find(".btn-add");
 		if($(this).val() != "")
@@ -28,9 +45,54 @@ $(function() {
 		
 		if(!$this.hasClass("disable"))
 		{
-			console.log($("#frm-add-project").serialize());
+			$.post("/api/projects", $("#frm-add-project").serialize(), function(response) {
+				if(response.ok)
+				{
+					// redirect to new project
+					$(".jqmWindow").jqmHide();
+					document.location.href = "/#/project/" + response.id;
+				}
+			});
 		}
 		
+		return false;
+	});
+
+	// mark task as complete || incomplete
+	$("#project").delegate(".task .is_complete", "click", function() {
+		var $this = $(this),
+			$task = $this.parents(".task"),
+			task_id = $task.attr("id"),
+			status = $task.hasClass("complete") ? "incomplete" : "complete",
+			project_id = document.location.hash.split("/").slice(-1);
+		
+		$.post("/api/projects/" + project_id + "/checklist/" + task_id + "/" + status, function(response) {
+			$task.toggleClass("complete");
+		});
+		
+		return false;
+	}).delegate(".task .btn-delete", "click", function() {
+		var $this = $(this),
+			$task = $this.parents(".task"),
+			task_id = $task.attr("id"),
+			project_id = document.location.hash.split("/").slice(-1),
+			task_len = $this.find(".task").length;
+
+		// can only delete a task if there are more than one tasks
+		if(task_len > 1)
+		{
+			$.ajax({
+				url: "/api/projects/" + project_id + "/checklist/" + task_id,
+				type: "DELETE",
+				success: function(response) {
+					$task.animate({
+						"opacity": 0
+					}, 200, function() {
+						$(this).remove();
+					});
+				}
+			});
+		}
 		return false;
 	});
 
@@ -85,6 +147,19 @@ var app = $.sammy(function() {
 		});
 	}).get("#/project/:project", function(context) { // project
 		change_page("project");
+		
+		$.getJSON("/api/projects/" + context.params["project"], function(json) {
+			if(json.ok && json.project)
+			{
+				$("#project").html("").render_template({
+					"name": "project-detail",
+					"data": json.project,
+					"complete": function() {
+						
+					}
+				});
+			}
+		});
 	});
 	
 	/*.get("#/schedule", function() {

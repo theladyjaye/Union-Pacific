@@ -73,6 +73,28 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 			}
 			& .body {background: $color_light_white; @include corner(); padding: 20px;}
 			
+			& .tasks {
+				li.task {margin-bottom: 3px; position: relative; float: left; clear: left; left: -20px;
+					& .task-details {display: block; width: 590px; padding: 5px; margin-left: 20px; float: left; @include corner(); background: #e9e9e9;}
+					&:nth-child(even) .task-details {background: #ececec;}
+					&.complete .task-details {background: $color_light_blue; color: $color_light_white;}
+					
+					& .btn-delete {position: absolute; left: 7px; top: 5px; display: none; font-weight: bold;}
+					&:hover {
+						& .btn-delete {display: block;}
+					}
+					& .title {float: left; margin-left: 5px; width: 390px;}
+					& .category {float: left; width: 80px;}
+					& .is_complete {float: left;}					
+					&.complete .is_complete {color: $color_light_white;}
+					
+					& .mark-as-complete {display: block;}
+					& .mark-as-incomplete {display: none;}
+					&.complete .mark-as-complete {display: none;}
+					&.complete .mark-as-incomplete {display: block;}
+				}
+			}
+			
 			& .stakeholders {
 				& .title {background: $color_lighter_blue; color: $color_dark_gray; width: 320px; left: -30px; height: 40px; position: relative; text-align: center; line-height: 44px; font-size: 28px; margin-bottom: 10px; font-weight: bold; text-shadow: -1px -1px 1px $color_light_blue;
 					& .arrow {width: 0; height: 0; line-height: 0; border-bottom: 7px solid transparent; position: absolute; top: 40px;}
@@ -108,12 +130,15 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 				}
 				& ul.holder li.bit-input input {font-size: 14px; position: relative; top: 2px;}
 			}
-			& #facebook-auto {width: 400px; @include corner(); @include boxshadow(rgba(0, 0, 0, 0.3), 0, 0, 1px); border: 1px solid #f0f0f0; background: $color_light_white;
+			& #facebook-auto {width: 400px; @include corner(); @include boxshadow(rgba(0, 0, 0, 0.3), 0, 0, 1px); border: 1px solid #f0f0f0; background: $color_light_white; z-index: 9999;
 				& ul li {font-weight: bold; border: 0;}
 				& ul li.auto-focus {background: $color_light_blue; color: $color_light_white; @include corner();}
 			}
 			
-			& .btn-add {margin: 20px 20px 0 0; float: right;}
+			& .checkbox-grouping {position: relative; top: 17px; font-size: 16px; line-height: 16px; width: 400px;}
+			
+			& .field-submit {margin: 20px 20px 0 0; float: right;}
+			& .btn-add {}
 		}	
 	// END ADD PROJECT MODAL
 	
