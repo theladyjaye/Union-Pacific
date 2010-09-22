@@ -36,99 +36,6 @@ exports.endpoints = function(app)
 	app.del('/:id/stakeholders/:email.:tld', deleteStakeholder); 
 }
 
-function deleteProject(req, res, next)
-{
-	var project_id = req.params.id.toLowerCase();
-	
-	db.getDoc(encodeURIComponent(project_id), function(projectError, project)
-	{
-		if(projectError == null)
-		{
-			db.removeDoc(project._id, project._rev, function(deleteError, deleteData)
-			{
-				if(deleteError == null)
-				{
-					db.compact();
-					next({"ok":true});
-				}
-				else
-				{
-					next({"ok":false, "message":"unable to delete project"});
-				}
-			});
-		}
-		else
-		{
-			next({"ok":false, "message":"project not found"});
-		}
-	});
-}
-
-function verifyToken(req, res, next)
-{
-	var project_id = req.params.id.toLowerCase();
-	var token      = req.params.token.toLowerCase();
-	
-	db.getDoc(encodeURIComponent(token), function(receiptError, receipt)
-	{
-		if(receiptError == null)
-		{
-			if(receipt.project != project_id)
-			{
-				next({"ok":false, "message":"token does not match project assignment"});
-			}
-			else
-			{
-				next({"ok":true});
-			}
-		}
-		else
-		{
-			next({"ok":false, "message":"token does not exist"});
-		}
-	});
-}
-
-function projectComplete(req, res, next)
-{
-	var project_id = req.params.id.toLowerCase();
-	db.getDoc(encodeURIComponent(project_id), function(projectError, project)
-	{
-		if(projectError == null)
-		{
-			project.is_complete = true;
-			
-			db.saveDoc(project, function(saveError, saveData)
-			{
-				if(saveError == null)
-				{
-					project.stakeholders.forEach(function(stakeholder)
-					{
-						var receipt     = new Receipt();
-						receipt.user    = stakeholder;
-						receipt.project = project._id;
-						
-						db.saveDoc(receipt, function(receiptError, receiptData)
-						{
-							sendCompleteEmail(stakeholder, project.name, receiptData.id);
-						});
-					})
-					
-					next({"ok":true, "id":saveData.id, "rev":saveData.rev});
-				}
-				else
-				{
-					next({"ok":false, "message":"failed remove task"});
-				}
-			});
-		}
-		else
-		{
-			next({"ok":false, "message":"invalid project"});
-		}
-	});
-}
-
 function sendCompleteEmail(address, projectTitle, token)
 {
 	/*
@@ -205,6 +112,71 @@ function sendVerifyAbortedEmail(address, projectTitle, unverifiedTasks)
 		  });
 	});
 	*/
+}
+
+function verifyToken(req, res, next)
+{
+	var project_id = req.params.id.toLowerCase();
+	var token      = req.params.token.toLowerCase();
+	
+	db.getDoc(encodeURIComponent(token), function(receiptError, receipt)
+	{
+		if(receiptError == null)
+		{
+			if(receipt.project != project_id)
+			{
+				next({"ok":false, "message":"token does not match project assignment"});
+			}
+			else
+			{
+				next({"ok":true});
+			}
+		}
+		else
+		{
+			next({"ok":false, "message":"token does not exist"});
+		}
+	});
+}
+
+function projectComplete(req, res, next)
+{
+	var project_id = req.params.id.toLowerCase();
+	db.getDoc(encodeURIComponent(project_id), function(projectError, project)
+	{
+		if(projectError == null)
+		{
+			project.is_complete = true;
+			
+			db.saveDoc(project, function(saveError, saveData)
+			{
+				if(saveError == null)
+				{
+					project.stakeholders.forEach(function(stakeholder)
+					{
+						var receipt     = new Receipt();
+						receipt.user    = stakeholder;
+						receipt.project = project._id;
+						
+						db.saveDoc(receipt, function(receiptError, receiptData)
+						{
+							sendCompleteEmail(stakeholder, project.name, receiptData.id);
+						});
+					})
+					
+					next({"ok":true, "id":saveData.id, "rev":saveData.rev});
+				}
+				else
+				{
+					next({"ok":false, "message":"failed remove task"});
+				}
+			});
+		}
+		else
+		{
+			next({"ok":false, "message":"invalid project"});
+		}
+	});
 }
 
 function projectVerify(req, res, next)
@@ -396,6 +368,33 @@ function projectVerify(req, res, next)
 	});
 }
 
+function deleteProject(req, res, next)
+{
+	var project_id = req.params.id.toLowerCase();
+	
+	db.getDoc(encodeURIComponent(project_id), function(projectError, project)
+	{
+		if(projectError == null)
+		{
+			db.removeDoc(project._id, project._rev, function(deleteError, deleteData)
+			{
+				if(deleteError == null)
+				{
+					db.compact();
+					next({"ok":true});
+				}
+				else
+				{
+					next({"ok":false, "message":"unable to delete project"});
+				}
+			});
+		}
+		else
+		{
+			next({"ok":false, "message":"project not found"});
+		}
+	});
+}
 
 function taskIncomplete(req, res, next)
 {
