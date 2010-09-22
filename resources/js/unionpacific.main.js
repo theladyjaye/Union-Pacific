@@ -43,6 +43,21 @@ $(function() {
 		$("#add-project-groups").html(output.join(""));
 	});
 
+	// delete project form functionality
+	$("#frm-delete-project").find(".btn-submit").click(function() {
+		var project_id = document.location.hash.split("/").slice(-1);
+		
+		$.ajax({
+			url: "/api/projects/" + project_id,
+			type: "DELETE",
+			success: function(response) {
+				// redirect to dashboard
+				document.location.href = "/#/dashboard";
+				$(".jqmWindow").jqmHide();
+			}
+		});
+	});
+
 	// add project form functionality
 	$("#frm-add-project").find("input[name=name]").keyup(function() {
 		var $btn_add = $("#frm-add-project").find(".btn-add");
@@ -187,7 +202,7 @@ $(function() {
 		var $this = $(this),
 			$task = $this.parents(".task");
 			
-		if(!$(".project-detail-container").hasClass("status-verification"))
+		if(!$("#project").hasClass("status-verification"))
 		{				
 			var	task_id = $task.attr("id"),
 				status = $task.hasClass("complete") ? "incomplete" : "complete",
@@ -325,10 +340,14 @@ $(function() {
 			});
 		
 			$.post("/api/project/" + project_id + "/verify/" + token, {"unverified": ary_incomplete_task_ids}, function(response) {
-				console.log(response);
 				document.location.href = "/#/dashboard";
 			});
 		}
+		return false;
+	}).delegate(".btn-delete-project", "click", function() { // delete project
+		$modal = $("#modal-delete-project");
+		$modal.find(".insert-project-name").html($("#project .project-name").text());
+		$modal.jqmShow();
 		return false;
 	});
 
@@ -376,7 +395,7 @@ function check_for_verification()
 		task_len = $tasks.length,
 		complete_task_len = $complete_tasks.length,
 		is_complete = false;
-		
+	
 	if(complete_task_len >= task_len)
 	{
 		$btn.removeClass("incomplete");
@@ -443,7 +462,7 @@ var app = $.sammy(function() {
 						check_for_completion();
 						
 						if(context.params["token"])
-						{							
+						{						
 							// verify token
 							$.get("/api/projects/" + context.params["project"] + "/verify/" + context.params["token"], function(response) {
 								if(response.ok) // valid token
@@ -455,7 +474,18 @@ var app = $.sammy(function() {
 								{
 									$("#block-project").show();
 								}
+								
+								if(json.project.is_verified)
+								{
+									$("#project").addClass("status-verified");
+									$("#project .tasks li").removeClass("complete");
+								}
 							});							
+						}
+						else if(json.project.is_verified)
+						{
+							$("#project").addClass("status-verified");
+							$("#project .tasks li").removeClass("complete");
 						}
 						else
 						{
@@ -463,7 +493,7 @@ var app = $.sammy(function() {
 							{
 								$("#block-project").show();
 							}
-						}
+						}						
 					}
 				});
 			}

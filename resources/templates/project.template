@@ -1,4 +1,4 @@
-<li>
+<li class="{{if is_verified}}project-status-verified{{/if}}">
 	<a href="#/project/${_id}">
 		{{if is_complete}}
 		<span class="status">being verified</span>

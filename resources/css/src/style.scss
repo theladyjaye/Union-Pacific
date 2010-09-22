@@ -44,6 +44,11 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 	
 	// DASHBOARD
 	#dashboard {
+		li.project-status-verified a {background: $color_light_blue; color: $color_light_white; 
+			& .timestamp {color: $color_light_white; opacity: 0.6;}
+			& .stakeholders {color: $color_light_white;}
+		}
+		
 		& ul {background: rgba(226, 226, 226, 0.3);
 			& li {float: left; margin: 12px;
 				& a {width: 260px; height: 160px; display: block; border: 1px solid #ddd; background: $color_light_white; color: $color_light_blue; @include corner(); padding: 20px; font-weight: bold; position: relative;
@@ -66,7 +71,7 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 	
 	// PROJECT
 	#project {
-		.status-verification {
+		&.status-verification {
 			& .instructions {display: block;}	
  			& .sidebar .btn-complete {display: none;}
 			& .sidebar .btn-add-stakeholders {display: none;}
@@ -74,8 +79,20 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 			& .column .tasks li.task .category {cursor: default;}
 			& .column .add-task {display: none;}
 			& .column .stakeholders li .btn-delete {display: none;}
+			& .btn-project-status {display: block;}
 		} 
 		
+		&.status-verified {
+			& .verified-instructions {display: block;}
+			& .sidebar .btn-complete {display: none;}
+			.column .tasks li.task .btn-delete {display: none;}
+			.column .tasks li.task .is_complete {display: none;}
+			& .column .add-task {display: none;}
+			& .column .stakeholders .btn-add-stakeholders {display: none;}
+			& .column .stakeholders li .btn-delete {display: none;}
+		}
+		
+		.verified-instructions,
 		.instructions {width: 940px; float: left; padding: 10px; margin: 0 0 20px 0; background: $color_lighter_blue; color: $color_dark_gray; @include corner(); @include boxshadow($color_light_blue, 0, 0, 1px); display: none;}
 		.column {float: left; width: 640px;		
 			&.sidebar {width: 300px; margin-left: 20px;}
@@ -127,7 +144,11 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 				}
 			}
 		}
-		.status-verification .btn-project-status {display: block;}
+		
+		.btn-delete-project {margin: 20px 0 0 0; float: right; background: #cc0000; color: $color_light_white; border: 0;
+			&:hover {background: #ff0000}
+		}
+		
 		& .btn-project-status {float: left; clear: both; width: 940px; font-size: 48px; height: 60px; letter-spacing: -1px; line-height: 60px; margin-top: 20px; display: none;
 			& .txt-incomplete {display: none;}
 			& .txt-complete {display: block;}
@@ -167,7 +188,10 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 			
 			& #dd-category {float: left; margin-top: 18px;}
 			& .field-item .input-category {display: none; float: left; width: 250px; margin: 13px 0 0 4px;}
+			
+			& .insert-project-name {font-weight: bold;}			
 		}	
+		#modal-delete-project .btn-submit {margin-right: 20px;}
 	// END MODAL
 	
 // END PAGES
@@ -202,6 +226,9 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 	&.disable {cursor: default; opacity: 0.4;
 		&:hover {@include lineargradient(#fff, $color_light_white); color: $color_light_blue; border-color: $color_light_white}
 		&:active {top: 0;}
+	}
+	&.btn-red-delete {background: #cc0000; color: $color_light_white; border: 0;
+		&:hover {background: #ff0000}
 	}
 }
 // END BTN

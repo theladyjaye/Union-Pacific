@@ -2,9 +2,13 @@
 	<div class="instructions">
 		<p><strong>IMPORTANT:</strong> As a stakeholder you are responsible to go through each task below and verify each item has been completed.  By clicking a task below, you are verifying the task is complete.  You may click the task the again to mark the item as incomplete.  Once you have gone through all tasks select the button at the bottom to state the status of the project.</p>
 	</div>
+	<div class="verified-instructions">
+		<p><strong>PROJECT IS READY FOR DEPLOYMENT</strong> Project has been verified with all stakeholders.  You may go ahead and deploy this project.</p>
+	</div>
+	
 	<div class="column">
 		<div class="header">
-			<h1>${project.name}</h1>
+			<h1 class="project-name">${project.name}</h1>
 			<p class="timestamp">Created ${phui.utils.elapsed_time(project.created_on)}</p>
 		</div>
 		<div class="body">
@@ -41,6 +45,7 @@
 				</ul>
 			</div>
 		</div>
+		<a href="#" class="btn btn-delete-project">Delete Project</a>
 	</div>
 	<a href="#" class="btn btn-project-status incomplete"><span class="txt-complete">Project is complete!</span><span class="txt-incomplete">Project is incomplete!</span></a>
 </div>

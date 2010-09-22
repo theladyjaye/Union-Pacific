@@ -38,7 +38,7 @@ exports.endpoints = function(app)
 
 function sendCompleteEmail(address, projectTitle, token)
 {
-	/*
+	
 	var basepath = fs.realpathSync('./application/templates');
 	
 	fs.readFile(basepath + '/email.project-complete.template', function (err, data) 
@@ -59,12 +59,12 @@ function sendCompleteEmail(address, projectTitle, token)
 		    body           : mustache.to_html(data.toString(), {"projectName":projectTitle, "token":token})
 		  });
 	});
-	*/
+	
 }
 
 function sendVerifyCompleteEmail(address, projectTitle)
 {
-	/*
+	
 	var basepath = fs.realpathSync('./application/templates');
 	
 	fs.readFile(basepath + '/email.project-verify-complete.template', function (err, data) 
@@ -85,12 +85,12 @@ function sendVerifyCompleteEmail(address, projectTitle)
 		    body           : mustache.to_html(data.toString(), {"projectName":projectTitle})
 		  });
 	});
-	*/
+	
 }
 
 function sendVerifyAbortedEmail(address, projectTitle, unverifiedTasks)
 {
-	/*
+	
 	var basepath = fs.realpathSync('./application/templates');
 	
 	fs.readFile(basepath + '/email.project-verify-aborted.template', function (err, data) 
@@ -111,7 +111,7 @@ function sendVerifyAbortedEmail(address, projectTitle, unverifiedTasks)
 		    body           : mustache.to_html(data.toString(), {"projectName":projectTitle, "tasks":unverifiedTasks})
 		  });
 	});
-	*/
+	
 }
 
 function verifyToken(req, res, next)
