@@ -75,6 +75,7 @@ $(function() {
 		if(!$this.hasClass("disable"))
 		{
 			var obj = phui.utils.querystring_to_object($("#frm-add-project").serialize());
+			obj.name = $("#frm-add-project").find("input[name=name]").val();
 			obj.stakeholders = obj.stakeholders.split(","); // turn stakeholders into array
 			
 			$.post("/api/projects", obj, function(response) {
