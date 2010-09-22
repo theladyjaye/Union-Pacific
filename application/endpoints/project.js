@@ -205,6 +205,7 @@ function projectVerify(req, res, next)
 								if(typeof fields.unverified != "undefined" && fields.unverified.length > 0)
 								{
 									project.is_complete = false;
+									project.is_verified = false;
 									
 									var unverifiedTasks = [];
 									// this is going to be an awkward step as well... such is life.
@@ -308,13 +309,29 @@ function projectVerify(req, res, next)
 
 													if(projectIsVerified)
 													{
-														stakeholders.forEach(function(stakeholder)
+														project.is_verified = true;
+														
+														db.SaveDoc(project, function(projectSaveError, projectSaveData)
 														{
-															sendVerifyCompleteEmail(stakeholder, project.name);
+															if(projectSaveError == null)
+															{
+																stakeholders.forEach(function(stakeholder)
+																{
+																	sendVerifyCompleteEmail(stakeholder, project.name);
+																});
+																
+																next({"ok":true});
+															}
+															else
+															{
+																next({"ok":false, "message":"Unable to update project as verified"});
+															}
 														});
 													}
-
-													next({"ok":true});
+													else
+													{
+														next({"ok":true});
+													}
 												}
 												else
 												{
