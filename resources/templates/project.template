@@ -1,7 +1,11 @@
 <li class="{{if is_verified}}project-status-verified{{/if}}">
 	<a href="#/project/${_id}">
-		{{if is_complete}}
-		<span class="status">being verified</span>
+		{{if is_verified}}
+		<span class="status">verified</span>
+		{{else}}
+			{{if is_complete}}
+			<span class="status">being verified</span>
+			{{/if}}
 		{{/if}}
 		<span class="title">${name}</span>
 		<span class="timestamp">Created ${phui.utils.elapsed_time(created_on)}</span>
