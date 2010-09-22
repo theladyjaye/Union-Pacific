@@ -761,28 +761,27 @@ function createProject(req, res, next)
 			{
 				var totalGroups  = fields.groups.length;
 				var currentGroup = 0;
+				console.log("Groups: "+ fields.groups);
 				
-				fields.groups.forEach(function(group)
+				client.request({
+				method: 'POST',
+				path: '/unionpacific/_all_docs?include_docs=true',
+				data: {"keys":fields.groups}
+				}, function(error, data)
 				{
-					// this is a totally async operation, so we gotta get a bit fancy, inside out time.
-					db.getDoc(encodeURIComponent(group), function(groupDocError, groupDoc)
+					for(var i in data.rows)
 					{
-						if(groupDocError == null)
-							project.checklist = project.checklist.concat(groupDoc.items);
-							
-						currentGroup = currentGroup + 1;
-						
-						if(currentGroup == totalGroups)
-						{
-							db.saveDoc(project, function(error, data)
-							{
-								if(error == null)
-									next({"ok":true, "id":data.id});
-								else
-									next({"ok":false, "message":"unable to save project"});
-							});
-						}
-					})
+						var group = data.rows[i].doc;
+						project.checklist = project.checklist.concat(group.items);
+					}
+					
+					db.saveDoc(project, function(error, data)
+					{
+						if(error == null)
+							next({"ok":true, "id":data.id});
+						else
+							next({"ok":false, "message":"unable to save project"});
+					});
 				});
 			}
 		});
