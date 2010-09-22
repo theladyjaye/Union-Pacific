@@ -1,7 +1,9 @@
 <p><b>{{projectName}}</b> is ready for you to verify! Awesome I know! I can barely contain myself as it is!</p>
 
-<p>Click the link below to proceed to the verification process:
-http://unionpacific/#/project/{{projectId}}?token={{token}}</p>
+<p>Click the link below to proceed to the verification process:<br>
+<a href="http://unionpacific/#/project/{{projectId}}?token={{token}}">http://unionpacific/#/project/{{projectId}}?token={{token}}</a><br>
+<b><i>Please note, your token will expire once you confirm or decline the verification, we are not messing around here.</i></b>
+</p>
 
 <p>A project cannot be deployed until all stakeholders have verified the project.</p>
 
