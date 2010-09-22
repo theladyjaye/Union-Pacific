@@ -152,6 +152,32 @@ function sendVerifyCompleteEmail(address, projectTitle)
 	*/
 }
 
+function sendVerifyAbortedEmail(address, projectTitle, unverifiedTasks)
+{
+	/*
+	var basepath = fs.realpathSync('./application/templates');
+	
+	fs.readFile(basepath + '/email.project-verify-aborted.template', function (err, data) 
+	{
+		if (err) throw err;
+		
+		email.send({
+		    host           : "mail.blitzagency.com",              // smtp server hostname
+		    port           : "25",                     // smtp server port
+		    domain         : "blitz.local",            // domain used by client to identify itself to server
+		    authentication : "no auth",        // auth login is supported; anything else is no auth
+		    //username       : "YXZlbnR1cmVsbGFAYmxpdHphZ2VuY3kuY29t",       // Base64 encoded username
+		    //password       : "YmFzc2V0dDMxNA==",       // Base64 encoded password
+		    to             : address,
+		    from           : "unionpacific@blitzagency.com",
+		    fromName       : "Union Pacific",
+		    subject        : "Union Pacific - Yikes partner, something ain't right with " + projectTitle + "!",
+		    body           : mustache.to_html(data.toString(), {"projectName":projectTitle, "tasks":unverifiedTasks})
+		  });
+	});
+	*/
+}
+
 function projectVerify(req, res, next)
 {
 	var project_id = req.params.id.toLowerCase();
@@ -164,77 +190,157 @@ function projectVerify(req, res, next)
 		{
 			if(projectError == null)
 			{
-				db.getDoc(encodeURIComponent(token), function(receiptError, receipt)
+				if(project.is_complete == true)
 				{
-					if(receiptError == null)
+					db.getDoc(encodeURIComponent(token), function(receiptError, receipt)
 					{
-						if(receipt.project != project_id)
+						if(receiptError == null)
 						{
-							next({"ok":false, "message":"token does not match project assignment"});
-						}
-						else
-						{
-							// RIGHT NOW ONLY SUCCESS IS WORKING
-							// TODO: if the rejected fields are there, 
-							// we need to mark the projects tasks incomplete appropriately
-							// if(fields.????)
-							
-							
-							db.view("application", "project-receipts", {"include_docs":true, "startkey":[project._id, null], "endkey":[project._id, {}]}, function(error, data)
+							if(receipt.project != project_id)
 							{
-								if(error == null)
+								next({"ok":false, "message":"token does not match project assignment"});
+							}
+							else
+							{
+								if(typeof fields.unverified != "undefined" && fields.unverified.length > 0)
 								{
-									var projectIsVerified = true;
-									var stakeholders      = [];
+									project.is_complete = false;
 									
-									data.rows.forEach(function(row)
+									var unverifiedTasks = [];
+									// this is going to be an awkward step as well... such is life.
+									// the task lists should not be that massive that this really matters
+									// thinking max 50-100 items or so.
+									fields.unverified.forEach(function(taskId)
 									{
-										if(row.doc._id != receipt._id)
+										project.checklist.forEach(function(task)
 										{
-											var receiptVerified = typeof(row.doc.verified_on) == "undefined" ? false : true;
-											stakeholders.push(row.doc.user);
-											
-											projectIsVerified = projectIsVerified && receiptVerified;
-										}
-									});
-									
-									receipt.verified_on = new Date();
-									
-									db.saveDoc(receipt, function(saveError, saveData)
-									{
-										if(saveError == null)
-										{
-											stakeholders.push(receipt.user);
-											
-											if(projectIsVerified)
+											if(task._id == taskId)
 											{
-												stakeholders.forEach(function(stakeholder)
-												{
-													sendVerifyCompleteEmail(stakeholder, project.name);
-												});
+												unverifiedTasks.push(task.name);
+												task.is_complete = false;
 											}
-											
-											next({"ok":true});
+										});
+									});
+								
+									db.saveDoc(project, function(projectSaveError, projectSaveData)
+									{
+										if(projectSaveError == null)
+										{
+											// now we need to delete all the receipt tokens, because we are starting over.
+											db.view("application", "project-receipts", {"include_docs":true, "startkey":[project._id, null], "endkey":[project._id, {}]}, function(error, data)
+											{
+												if(error == null)
+												{
+													var payload = {docs:[]};
+													var stakeholders = [];
+													data.rows.forEach(function(row)
+													{
+														row.doc._deleted = true;
+													
+														// the person who canceled the verification knows it
+														// so we exclude them from the stakeholders that will be notified
+														// if(row.doc.user != receipt.user)
+															stakeholders.push(row.doc.user);
+													
+														payload.docs.push(row.doc);
+													
+													});
+													
+													// bulk update and then compact
+													db.bulkDocs(payload, function(bulkError, bulkData)
+													{
+														if(bulkError == null)
+														{
+															stakeholders.forEach(function(stakeholder)
+															{
+																sendVerifyAbortedEmail(stakeholder, project.name, unverifiedTasks);
+															});
+														
+															db.compact();
+															next({"ok":true});
+														}
+														else
+														{
+															next({"ok":false, "message":error.message});
+														}
+													});
+												}
+												else
+												{
+													next({"ok":false, "message":error.message});
+												}
+											});
+										
 										}
 										else
 										{
-											next({"ok":false, "message":"unable to update token receipt"});
+											next({"ok":false, "message":"unable to update unverifed tasks in project"});
 										}
-										
 									});
 								}
 								else
 								{
-									next({"ok":false, "message":error.message});
+									db.view("application", "project-receipts", {"include_docs":true, "startkey":[project._id, null], "endkey":[project._id, {}]}, function(error, data)
+									{
+										if(error == null)
+										{
+											var projectIsVerified = true;
+											var stakeholders      = [];
+
+											data.rows.forEach(function(row)
+											{
+												if(row.doc._id != receipt._id)
+												{
+													var receiptVerified = typeof(row.doc.verified_on) == "undefined" ? false : true;
+													stakeholders.push(row.doc.user);
+
+													projectIsVerified = projectIsVerified && receiptVerified;
+												}
+											});
+
+											receipt.verified_on = new Date();
+
+											db.saveDoc(receipt, function(saveError, saveData)
+											{
+												if(saveError == null)
+												{
+													stakeholders.push(receipt.user);
+
+													if(projectIsVerified)
+													{
+														stakeholders.forEach(function(stakeholder)
+														{
+															sendVerifyCompleteEmail(stakeholder, project.name);
+														});
+													}
+
+													next({"ok":true});
+												}
+												else
+												{
+													next({"ok":false, "message":"unable to update token receipt"});
+												}
+
+											});
+										}
+										else
+										{
+											next({"ok":false, "message":error.message});
+										}
+									});
 								}
-							});
+							}
 						}
-					}
-					else
-					{
-						next({"ok":false, "message":"token does not exist"});
-					}
-				});
+						else
+						{
+							next({"ok":false, "message":"token does not exist"});
+						}
+					});
+				}
+				else
+				{
+					next({"ok":false, "message":"cannot verify a project that is marked as incomplete"});
+				}
 			}
 			else
 			{

@@ -147,6 +147,7 @@ function initialize(req, res, next)
 		g4.addTask(new Task("Does it sparkle?"));
 		g4.addTask(new Task("Does it sap the magic force from all things nearby?"));
 		g4.addTask(new Task("Is it Hitler, Atomic Bombs, and Seabiscuit wrapped in a vegan burrito?"));
+		g4.addTask(new Task("Is it Lord of the Rings with Owls?"));
 	
 	
 	
