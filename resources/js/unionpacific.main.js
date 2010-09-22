@@ -470,14 +470,16 @@ var app = $.sammy(function() {
 						// check if all tasks are completed
 						check_for_completion();
 						
+						$("#project").removeClass("status-verification status-verified");
+							
 						if(context.params["token"])
 						{						
 							// verify token
-							$.get("/api/projects/" + context.params["project"] + "/verify/" + context.params["token"], function(response) {
+							$.get("/api/projects/" + context.params["project"] + "/verify/" + context.params["token"], function(response) {				
 								if(response.ok) // valid token
 								{
 									$("#project").addClass("status-verification");
-									$("#project .tasks li").removeClass("complete");
+									$("#project .tasks li").removeClass("complete");	
 								}
 								else // invalid token, show block
 								{
