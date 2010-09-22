@@ -15,13 +15,15 @@ exports.endpoints = function(app)
 	app.get('/:id', getProject);
 	
 	app.get('/', getProjects);
+	app.get('/:id/verify/:token', verifyToken);
 	
 	app.post('/', createProject);
 	app.post('/:id/checklist', addItem);
 	
 	app.post('/:id/complete', projectComplete);
 	app.post('/:id/incomplete', projectComplete);
-	app.post('/:id/verify/:token', verifyProject);
+	
+	app.post('/:id/verify/:token', projectVerify);
 	
 	app.post('/:id/stakeholders', addStakeholder);
 	app.post('/:id/checklist/:taskId/complete', taskComplete);
@@ -31,6 +33,31 @@ exports.endpoints = function(app)
 	
 	// the router sees '.' as a the file extension, so we will just run with it rather than regexing it
 	app.del('/:id/stakeholders/:email.:tld', deleteStakeholder); 
+}
+
+function verifyToken(req, res, next)
+{
+	var project_id = req.params.id.toLowerCase();
+	var token      = req.params.token.toLowerCase();
+	
+	db.getDoc(encodeURIComponent(token), function(receiptError, receipt)
+	{
+		if(receiptError == null)
+		{
+			if(receipt.project != project_id)
+			{
+				next({"ok":false, "message":"token is not match project assignment"});
+			}
+			else
+			{
+				next({"ok":true});
+			}
+		}
+		else
+		{
+			next({"ok":false, "message":"token does not exist"});
+		}
+	});
 }
 
 function projectComplete(req, res, next)
@@ -54,7 +81,7 @@ function projectComplete(req, res, next)
 						
 						db.saveDoc(receipt, function(receiptError, receiptData)
 						{
-							sendCompleteEmail(stakeholder, project.name, receiptData.id);
+							//sendCompleteEmail(stakeholder, project.name, receiptData.id);
 						});
 					})
 					
@@ -97,10 +124,10 @@ function sendCompleteEmail(address, projectTitle, token)
 	});
 }
 
-function verifyProject(req, res, next)
+function projectVerify(req, res, next)
 {
 	var project_id = req.params.id.toLowerCase();
-	var token    = req.params.token.toLowerCase();
+	var token      = req.params.token.toLowerCase();
 	
 	db.getDoc(encodeURIComponent(project_id), function(projectError, project)
 	{
