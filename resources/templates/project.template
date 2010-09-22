@@ -1,6 +1,8 @@
 <li>
 	<a href="#/project/${_id}">
-		<span class="status">being confirmed</span>
+		{{if is_complete}}
+		<span class="status">being verified</span>
+		{{/if}}
 		<span class="title">${name}</span>
 		<span class="timestamp">Created ${phui.utils.elapsed_time(created_on)}</span>
 		<span class="stakeholders-title">Stakeholders</span>

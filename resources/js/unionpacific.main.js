@@ -31,13 +31,13 @@ $(function() {
 	$.get("/api/groups", function(json) {
 		var output = [],
 			group = {};
-		
-		utils.categories = json.groups;
-		
+				
 		for(var i = 0, len = json.groups.length; i < len; i++)
 		{
 			group = json.groups[i];
 			output.push('<input type="checkbox" name="groups" value="' + group._id + '" />' + group.name);
+			
+			utils.categories.push(group.name);
 		}
 		
 		$("#add-project-groups").html(output.join(""));
@@ -116,8 +116,11 @@ $(function() {
 					
 					$(li).insertBefore("#project .tasks li:last");
 					
-					// add new category to list
-					//utils.categories.push({response.id: obj.category});
+					if(obj.category != "-1")
+					{
+						// add new category to list
+						utils.categories.push({"name": obj.category});
+					}
 					
 					$(".jqmWindow").jqmHide();
 					
@@ -204,7 +207,16 @@ $(function() {
 	}).delegate("#btn-complete", "click", function() {
 		if(!$(this).hasClass("disable"))
 		{
+			var project_id = document.location.hash.split("/").slice(-1);
+			
 			// fire complete emails
+			$.post("/api/projects/" + project_id + "/complete", function(response) {
+				if(response.ok)
+				{
+					// redirect to dashboard
+					document.location.href = "/#/dashboard";
+				}
+			});
 		}
 		return false;
 	}).delegate(".task .btn-delete", "click", function() { // delete task
@@ -266,6 +278,7 @@ $(function() {
 		var $frm = $("#frm-add-task");
 		
 		$frm[0].reset();
+		utils.setup_categories();
 		$frm.find(".input-category").hide();
 		$("#modal-add-task").jqmShow();
 		
@@ -298,9 +311,24 @@ $(function() {
 	
 		return false;	
 	}).delegate(".btn-project-status", "click", function() {
-		var $tasks = $("#project .tasks li.task:not(.complete)");
+		var $incomplete_tasks = $("#project .tasks li.task:not(.complete)"),
+			ary_incomplete_task_ids = [],
+			hash = document.location.hash,
+			project_id = hash.split("/").slice(-1),
+			token = phui.utils.querystring_to_object(hash.substr(hash.indexOf("?") + 1));
 		
-		console.log($tasks);
+		if(project_id && token)
+		{		
+			// get ids of incomplete tasks into an array
+			$incomplete_tasks.each(function() {
+				ary_incomplete_task_ids.push($(this).attr("id"));
+			});
+		
+			$.post("/api/project/" + project_id + "/verify/" + token, {"unverified": ary_incomplete_task_ids}, function(response) {
+				console.log(response);
+				document.location.href = "/#/dashboard";
+			});
+		}
 		return false;
 	});
 
@@ -348,9 +376,7 @@ function check_for_verification()
 		task_len = $tasks.length,
 		complete_task_len = $complete_tasks.length,
 		is_complete = false;
-	
-	console.log(complete_task_len, task_len);
-	
+		
 	if(complete_task_len >= task_len)
 	{
 		$btn.removeClass("incomplete");
@@ -372,16 +398,7 @@ function change_page(page_id)
 	}).fadeOut();
 	
 	$("#" + page_id).delay(300).fadeIn();
-	
-	//change_nav(page_id);
 }
-/*
-function change_nav(page_id)
-{
-	$("#nav").find("a").removeClass("on");
-	$("#nav a[href=#/" + page_id + "]").addClass("on");
-}
-*/
 
 // sammy
 var app = $.sammy(function() {
@@ -420,15 +437,13 @@ var app = $.sammy(function() {
 					"data": json,
 					"complete": function() {
 						// setup categories
+						utils.categories = utils.get_categories_for_page();
 						utils.setup_categories();
 						// check if all tasks are completed
 						check_for_completion();
 						
 						if(context.params["token"])
-						{
-							//	$(".project-detail-container").addClass("status-verification");
-							//	$("#project .tasks li").removeClass("complete");
-							
+						{							
 							// verify token
 							$.get("/api/projects/" + context.params["project"] + "/verify/" + context.params["token"], function(response) {
 								if(response.ok) // valid token
@@ -440,8 +455,14 @@ var app = $.sammy(function() {
 								{
 									$("#block-project").show();
 								}
-							});
-							
+							});							
+						}
+						else
+						{
+							if(json.project.is_complete)
+							{
+								$("#block-project").show();
+							}
 						}
 					}
 				});
@@ -471,12 +492,27 @@ var utils =
 		
 		for(var i = 0, len = utils.categories.length; i < len; i++)
 		{
-			categories.push('<option value="' + utils.categories[i].name + '">' + utils.categories[i].name + '</option>');			
+			categories.push('<option value="' + utils.categories[i] + '">' + utils.categories[i] + '</option>');			
 		}
 		
 		categories.push('<option value="-1">Create New Category</option>');
 		
 		$("#dd-category").html(categories.join(""));
+	},
+	get_categories_for_page: function() {
+		var $categories = $("#project li.task .category"),
+			categories = utils.categories,
+			category = "";
+		
+		$categories.each(function() {
+			category = $(this).text();
+			if($.inArray(category, categories) == -1)
+			{
+				categories.push(category);
+			}
+		});
+		
+		return categories;
 	}
 };
 // END UTILS

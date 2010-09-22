@@ -89,5 +89,5 @@ phui.utils =
 	    var n = Math.floor(age_in_seconds/60/60/24/365);
 
 	    return n + ' year' + s(n) + ' ago';
-	},
+	}
 };
