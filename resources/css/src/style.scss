@@ -15,7 +15,7 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 	ul {list-style: none;}
 	hr {clear: both}
 	hr.thick {border-width: 6px; border-color: #000;}
-#container {position: relative; margin: 0 auto; width: $wrap_width; padding: 10px 0 20px 0; opacity: 1; min-height: 800px;}
+#container {position: relative; margin: 0 auto; width: $wrap_width; padding: 10px 0 20px 0; opacity: 1}
 	.wrap {position: relative; width: $wrap_width;}
 // END BASE
 
@@ -46,11 +46,12 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 	#dashboard {
 		& ul {background: rgba(226, 226, 226, 0.3);
 			& li {float: left; margin: 12px;
-				& a {width: 260px; height: 160px; display: block; border: 1px solid #ddd; background: $color_light_white; color: $color_light_blue; @include corner(); padding: 20px; font-weight: bold;
+				& a {width: 260px; height: 160px; display: block; border: 1px solid #ddd; background: $color_light_white; color: $color_light_blue; @include corner(); padding: 20px; font-weight: bold; position: relative;
 					&:hover {background: $color_light_blue; color: $color_light_white; 
 						& .timestamp {color: $color_light_white; opacity: 0.6;}
 						& .stakeholders {color: $color_light_white;}
 					}
+					& .status {background: $color_dark_gray; @include onecorner(5px, 'bottom', 'left'); @include onecorner(5px, 'bottom', 'right'); position: absolute; right: 20px; top: 0; padding: 2px 4px; font-weight: normal; @include boxshadow(rgba(0, 0, 0, 0.3), 0, 0, 1px);}
 					& .title {float: left; font-size: 24px;}
 					& .timestamp {float: left; clear: left; font-style: italic; color: $color_dark_gray; opacity: 0.3; font-weight: normal;}
 					& .stakeholders-title {color: $color_dark_gray; font-weight: bold; float: left; clear: left; margin: 10px 0 0;}
@@ -65,6 +66,17 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 	
 	// PROJECT
 	#project {
+		.status-verification {
+			& .instructions {display: block;}	
+ 			& .sidebar .btn-complete {display: none;}
+			& .sidebar .btn-add-stakeholders {display: none;}
+			& .column .tasks li.task .btn-delete {display: none;}
+			& .column .tasks li.task .category {cursor: default;}
+			& .column .add-task {display: none;}
+			& .column .stakeholders li .btn-delete {display: none;}
+		} 
+		
+		.instructions {width: 940px; float: left; padding: 10px; margin: 0 0 20px 0; background: $color_lighter_blue; color: $color_dark_gray; @include corner(); @include boxshadow($color_light_blue, 0, 0, 1px); display: none;}
 		.column {float: left; width: 640px;		
 			&.sidebar {width: 300px; margin-left: 20px;}
 			& .header {height: 80px; width: 100%;
@@ -95,7 +107,7 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 					&.complete .mark-as-complete {display: none;}
 					&.complete .mark-as-incomplete {display: block;}
 				}
-				.btn-add-task {float:left; clear: left; width: 590px; display: block; padding: 5px; @include corner(); background: $color_light_blue; color: $color_light_white; text-align: center; font-weight: bold; font-size: 18px; text-shadow: -1px -1px 1px $color_light_blue;
+				.btn-add-task {float:left; clear: left; width: 590px; display: block; padding: 5px; @include corner(); background: $color_light_blue; color: $color_light_white; text-align: center; font-weight: bold; font-size: 18px; text-shadow: -1px -1px 1px $color_light_blue; @include boxshadow($color_light_blue, 0, 0, 1px, insert);
 					&:hover {background: $color_lighter_blue;}
 				}
 			}
@@ -115,6 +127,17 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 				}
 			}
 		}
+		.status-verification .btn-project-status {display: block;}
+		& .btn-project-status {float: left; clear: both; width: 940px; font-size: 48px; height: 60px; letter-spacing: -1px; line-height: 60px; margin-top: 20px; display: none;
+			& .txt-incomplete {display: none;}
+			& .txt-complete {display: block;}
+			&.incomplete {background: #cc0000; color: $color_light_white;
+				& .txt-incomplete {display: block;}
+				& .txt-complete {display: none;}
+				&:hover {border-color: $color_light_white; background: #ff0000;}
+			}
+		}
+		
 	}	
 	// END PROJECT
 	
@@ -128,7 +151,7 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 			}
 			& .body {width: 552px; padding: 20px; float: left;}
 			& .field-item {float: left; clear: left;
-				& label {float: left; width: 100px; margin-right: 20px; font-weight: bold; text-transform: uppercase; position: relative; top: 19px; font-size: 16px;}
+				& label {float: left; width: 110px; margin-right: 10px; font-weight: bold; text-transform: uppercase; position: relative; top: 19px; font-size: 16px;}
 				& label[for=name] {top: 9px;}
 				& .textboxlist-bits,
 				& .input-field {float: left; @include corner(); border: 1px solid rgba(0, 0, 0, 0.1); width: 400px; padding: 5px; font-size: 14px; @include boxshadow(rgba(0, 0, 0, 0.3), 0, 1px, 2px, inset);}
@@ -148,6 +171,17 @@ body {font: 14px "Calibri", "Lucida Sans", Helvetica, Arial, sans-serif; color: 
 	// END MODAL
 	
 // END PAGES
+
+// BLOCK PROJECT
+#block-project {position: absolute; width: 100%; height: 100%; background: #000; opacity: 0.9; left: 0; top: 0; display: none;
+	& .wrap {margin: 0 auto;}
+	& p {margin-top: 150px; font-size: 42px; color: $color_light_blue; font-weight: bold; text-align: center;}
+	& .back {margin-top: 20px;}
+	& .btn-back {font-size: 36px; text-align: center; font-weight: bold; color: $color_light_white;
+		&:hover {color: $color_light_blue;}
+	}
+}
+// END BLOCK PROJECT
 
 
 // ICONS
