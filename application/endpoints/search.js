@@ -18,7 +18,8 @@ function getUsers(req, res, next)
 			results = [];
 			
 			data.rows.forEach(function(row){
-				results.push({"caption": row.doc.first + " " + row.doc.last, "value": row.doc._id})
+				results.push([row.doc._id, row.doc.first + " " + row.doc.last]);
+				//results.push({"caption": row.doc.first + " " + row.doc.last, "value": row.doc._id})
 				//results.push(row.doc);
 			});
 			

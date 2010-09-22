@@ -213,7 +213,8 @@ function addStakeholder(req, res, next)
 			{
 				if(projectError == null)
 				{
-					var email = fields.email.trim();
+//					var email = fields.email.trim();
+					var email = trim(fields.email);
 					
 					db.getDoc(email, function(userError, user)
 					{
@@ -235,7 +236,7 @@ function addStakeholder(req, res, next)
 							db.saveDoc(project, function(error, data)
 							{
 								if(error == null)
-									next({"ok":true, "id":data.id, "rev":data.rev});
+									next({"ok":true, "id":data.id, "rev":data.rev, "email": email});
 								else
 									next({"ok":false, "message":"unable to add stakeholder to project"});
 							});
@@ -370,10 +371,14 @@ function addItem(req, res, next)
 			{
 				if(projectError == null)
 				{
-					var task = new Task(fields.name.trim());
+//					var task = new Task(fields.name.trim());
+					var task = new Task(trim(fields.name));
 					
 					if(typeof fields.category != "undefined")
-						task.category = fields.category.trim();
+					{
+//						task.category = fields.category.trim();
+						task.category = trim(fields.category);
+					}
 						
 					task.generateId();
 					
@@ -441,7 +446,8 @@ function createProject(req, res, next)
 		form.parse(req, function(err, fields, files)
 		{
 			var project          = new Project();
-			project.name         = fields.name.trim();
+//			project.name         = fields.name.trim();
+			project.name		 = trim(fields.name);
 			project.stakeholders = fields.stakeholders;
 			
 			if(typeof fields.groups != "undefined")
@@ -478,4 +484,9 @@ function createProject(req, res, next)
 	{
 		next({"ok":false, "message":"invalid request"});
 	}
+}
+
+function trim(str)
+{
+	return str ? str.toString().replace(/^\s*/, "").replace(/\s*$/, "") : "";
 }
