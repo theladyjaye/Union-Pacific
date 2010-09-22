@@ -30,9 +30,38 @@ exports.endpoints = function(app)
 	app.post('/:id/checklist/:taskId/incomplete', taskIncomplete);
 	
 	app.del('/:id/checklist/:taskId', deleteItem);
+	app.del('/:id', deleteProject);
 	
 	// the router sees '.' as a the file extension, so we will just run with it rather than regexing it
 	app.del('/:id/stakeholders/:email.:tld', deleteStakeholder); 
+}
+
+function deleteProject(req, res, next)
+{
+	var project_id = req.params.id.toLowerCase();
+	
+	db.getDoc(encodeURIComponent(project_id), function(projectError, project)
+	{
+		if(projectError == null)
+		{
+			db.removeDoc(project._id, project._rev, function(deleteError, deleteData)
+			{
+				if(deleteError == null)
+				{
+					db.compact();
+					next({"ok":true});
+				}
+				else
+				{
+					next({"ok":false, "message":"unable to delete project"});
+				}
+			});
+		}
+		else
+		{
+			next({"ok":false, "message":"project not found"});
+		}
+	});
 }
 
 function verifyToken(req, res, next)
