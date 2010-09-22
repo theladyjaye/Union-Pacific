@@ -339,7 +339,7 @@ $(function() {
 				ary_incomplete_task_ids.push($(this).attr("id"));
 			});
 		
-			$.post("/api/project/" + project_id + "/verify/" + token, {"unverified": ary_incomplete_task_ids}, function(response) {
+			$.post("/api/projects/" + project_id + "/verify/" + token, {"unverified": ary_incomplete_task_ids}, function(response) {
 				document.location.href = "/#/dashboard";
 			});
 		}
