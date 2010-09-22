@@ -1,0 +1,17 @@
+<p><b>Woah Nelly! {{projectName}} is not going anywhere!</b></p>
+<p>The following tasks cannot be verified:</p>
+<table cellpadding="3" cellspacing="3" border="1">
+	<tr>
+		<td><b>Task Name</b></td>
+	</tr>
+	{{#tasks}}
+	<tr valign="top" align="left" bgcolor="#efefef">
+		<td>{{.}}</td>
+	</tr>
+	{{/tasks}}
+</table>
+<p>Someone <b>best</b> get up on this so we can get this puppy rollin again.</p>
+<p><i>Hint:Yelling at or blaming someone, not yourself, is probably the mature and proper course of action here.</i></p>
+
+<p>A project cannot be deployed until all stakeholders have verified the project.</p>
+<b>Do not reply to this email, no one is listening.</b>
