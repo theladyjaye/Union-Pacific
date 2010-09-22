@@ -77,6 +77,13 @@ $(function() {
 			var obj = phui.utils.querystring_to_object($("#frm-add-project").serialize());
 			obj.name = $("#frm-add-project").find("input[name=name]").val();
 			obj.stakeholders = obj.stakeholders.split(","); // turn stakeholders into array
+			obj.groups = [];
+			var checked_groups = $("#frm-add-project").find("input[name=groups]:checked");
+			
+			checked_groups.each(function() {
+				obj.groups.push($(this).val());
+			});
+			
 			
 			$.post("/api/projects", obj, function(response) {
 				if(response.ok)
