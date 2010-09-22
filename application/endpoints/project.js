@@ -81,7 +81,7 @@ function projectComplete(req, res, next)
 						
 						db.saveDoc(receipt, function(receiptError, receiptData)
 						{
-							//sendCompleteEmail(stakeholder, project.name, receiptData.id);
+							sendCompleteEmail(stakeholder, project.name, receiptData.id);
 						});
 					})
 					
@@ -102,6 +102,7 @@ function projectComplete(req, res, next)
 
 function sendCompleteEmail(address, projectTitle, token)
 {
+	/*
 	var basepath = fs.realpathSync('./application/templates');
 	
 	fs.readFile(basepath + '/email.project-complete.template', function (err, data) 
@@ -122,10 +123,12 @@ function sendCompleteEmail(address, projectTitle, token)
 		    body           : mustache.to_html(data.toString(), {"projectName":projectTitle, "token":token})
 		  });
 	});
+	*/
 }
 
 function sendVerifyCompleteEmail(address, projectTitle)
 {
+	/*
 	var basepath = fs.realpathSync('./application/templates');
 	
 	fs.readFile(basepath + '/email.project-verify-complete.template', function (err, data) 
@@ -146,6 +149,7 @@ function sendVerifyCompleteEmail(address, projectTitle)
 		    body           : mustache.to_html(data.toString(), {"projectName":projectTitle})
 		  });
 	});
+	*/
 }
 
 function projectVerify(req, res, next)
