@@ -154,13 +154,14 @@ function projectComplete(req, res, next)
 				{
 					project.stakeholders.forEach(function(stakeholder)
 					{
-						var receipt     = new Receipt();
-						receipt.user    = stakeholder;
-						receipt.project = project._id;
+						var receipt          = new Receipt();
+						receipt.user         = stakeholder;
+						receipt.project      = project._id;
+						receipt.project_name = project.name;
 						
 						db.saveDoc(receipt, function(receiptError, receiptData)
 						{
-							sendCompleteEmail(stakeholder, project.name, receiptData.id);
+							//sendCompleteEmail(stakeholder, project.name, receiptData.id);
 						});
 					})
 					
@@ -233,7 +234,7 @@ function projectVerify(req, res, next)
 											{
 												if(error == null)
 												{
-													var payload = {docs:[]};
+													var payload = {"docs":[]};
 													var stakeholders = [];
 													data.rows.forEach(function(row)
 													{
@@ -255,7 +256,7 @@ function projectVerify(req, res, next)
 														{
 															stakeholders.forEach(function(stakeholder)
 															{
-																sendVerifyAbortedEmail(stakeholder, project.name, unverifiedTasks);
+																//sendVerifyAbortedEmail(stakeholder, project.name, unverifiedTasks);
 															});
 														
 															db.compact();
@@ -293,7 +294,7 @@ function projectVerify(req, res, next)
 											{
 												if(row.doc._id != receipt._id)
 												{
-													var receiptVerified = typeof(row.doc.verified_on) == "undefined" ? false : true;
+													var receiptVerified = row.doc.verified_on == null ? false : true;
 													stakeholders.push(row.doc.user);
 
 													projectIsVerified = projectIsVerified && receiptVerified;
@@ -318,7 +319,7 @@ function projectVerify(req, res, next)
 															{
 																stakeholders.forEach(function(stakeholder)
 																{
-																	sendVerifyCompleteEmail(stakeholder, project.name);
+																	//sendVerifyCompleteEmail(stakeholder, project.name);
 																});
 																
 																next({"ok":true});
@@ -376,16 +377,40 @@ function deleteProject(req, res, next)
 	{
 		if(projectError == null)
 		{
-			db.removeDoc(project._id, project._rev, function(deleteError, deleteData)
+			db.view("application", "project-receipts", {"include_docs":true, "startkey":[project._id, null], "endkey":[project._id, {}]}, function(error, data)
 			{
-				if(deleteError == null)
+				payload = {"docs":[]};
+				
+				if(error == null)
 				{
-					db.compact();
-					next({"ok":true});
+					data.rows.forEach(function(row)
+					{
+						if(row.doc.verified_on == null)
+						{
+							row.doc._deleted = true;
+							payload.docs.push(row.doc);
+						}
+					});
+					
+					project._deleted = true;
+					payload.docs.push(project);
+					
+					db.bulkDocs(payload, function(bulkError, bulkData)
+					{
+						if(bulkError == null)
+						{
+							db.compact();
+							next({"ok":true});
+						}
+						else
+						{
+							next({"ok":false, "message":"unable to delete project"});
+						}
+					});
 				}
 				else
 				{
-					next({"ok":false, "message":"unable to delete project"});
+					next({"ok":false, "message":"unable to delete project - map not responding"});
 				}
 			});
 		}
