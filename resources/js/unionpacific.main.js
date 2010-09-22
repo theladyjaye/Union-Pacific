@@ -329,8 +329,12 @@ $(function() {
 		var $incomplete_tasks = $("#project .tasks li.task:not(.complete)"),
 			ary_incomplete_task_ids = [],
 			hash = document.location.hash,
-			project_id = hash.split("/").slice(-1),
-			token = phui.utils.querystring_to_object(hash.substr(hash.indexOf("?") + 1));
+			project_id = hash.split("/").slice(-1)[0],
+			token = phui.utils.querystring_to_object(hash.substr(hash.indexOf("?") + 1)).token;
+		
+		project_id = project_id.substring(0, project_id.indexOf("?"));
+		
+		//console.log(project_id, token);
 		
 		if(project_id && token)
 		{		
