@@ -46,7 +46,7 @@ function verifyToken(req, res, next)
 		{
 			if(receipt.project != project_id)
 			{
-				next({"ok":false, "message":"token is not match project assignment"});
+				next({"ok":false, "message":"token does not match project assignment"});
 			}
 			else
 			{
@@ -124,21 +124,113 @@ function sendCompleteEmail(address, projectTitle, token)
 	});
 }
 
+function sendVerifyCompleteEmail(address, projectTitle)
+{
+	var basepath = fs.realpathSync('./application/templates');
+	
+	fs.readFile(basepath + '/email.project-verify-complete.template', function (err, data) 
+	{
+		if (err) throw err;
+		
+		email.send({
+		    host           : "mail.blitzagency.com",              // smtp server hostname
+		    port           : "25",                     // smtp server port
+		    domain         : "blitz.local",            // domain used by client to identify itself to server
+		    authentication : "no auth",        // auth login is supported; anything else is no auth
+		    //username       : "YXZlbnR1cmVsbGFAYmxpdHphZ2VuY3kuY29t",       // Base64 encoded username
+		    //password       : "YmFzc2V0dDMxNA==",       // Base64 encoded password
+		    to             : address,
+		    from           : "unionpacific@blitzagency.com",
+		    fromName       : "Union Pacific",
+		    subject        : "Union Pacific - " + projectTitle + " is Verified",
+		    body           : mustache.to_html(data.toString(), {"projectName":projectTitle})
+		  });
+	});
+}
+
 function projectVerify(req, res, next)
 {
 	var project_id = req.params.id.toLowerCase();
 	var token      = req.params.token.toLowerCase();
+	var form       = req.form = new formidable.IncomingForm;
 	
-	db.getDoc(encodeURIComponent(project_id), function(projectError, project)
+	form.parse(req, function(err, fields, files)
 	{
-		if(projectError == null)
+		db.getDoc(encodeURIComponent(project_id), function(projectError, project)
 		{
-			
-		}
-		else
-		{
-			next({"ok":false, "message":"invalid project"});
-		}
+			if(projectError == null)
+			{
+				db.getDoc(encodeURIComponent(token), function(receiptError, receipt)
+				{
+					if(receiptError == null)
+					{
+						if(receipt.project != project_id)
+						{
+							next({"ok":false, "message":"token does not match project assignment"});
+						}
+						else
+						{
+							db.view("application", "project-receipts", {"include_docs":true, "startkey":[project._id, null], "endkey":[project._id, {}]}, function(error, data)
+							{
+								if(error == null)
+								{
+									var projectIsVerified = true;
+									var stakeholders      = [];
+									
+									data.rows.forEach(function(row)
+									{
+										if(row.doc._id != receipt._id)
+										{
+											var receiptVerified = typeof(row.doc.verified_on) == "undefined" ? false : true;
+											stakeholders.push(row.doc.user);
+											
+											projectIsVerified = projectIsVerified && receiptVerified;
+										}
+									});
+									
+									receipt.verified_on = new Date();
+									
+									db.saveDoc(receipt, function(saveError, saveData)
+									{
+										if(saveError == null)
+										{
+											stakeholders.push(receipt.user);
+											
+											if(projectIsVerified)
+											{
+												stakeholders.forEach(function(stakeholder)
+												{
+													sendVerifyCompleteEmail(stakeholder, project.name);
+												});
+											}
+											
+											next({"ok":true});
+										}
+										else
+										{
+											next({"ok":false, "message":"unable to update token receipt"});
+										}
+										
+									});
+								}
+								else
+								{
+									next({"ok":false, "message":error.message});
+								}
+							});
+						}
+					}
+					else
+					{
+						next({"ok":false, "message":"token does not exist"});
+					}
+				});
+			}
+			else
+			{
+				next({"ok":false, "message":"invalid project"});
+			}
+		});
 	});
 }
 

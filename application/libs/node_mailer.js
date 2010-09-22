@@ -41,30 +41,33 @@ var email = {
         
     var self = this;
 
-    this.connection = tcp.createConnection(options.port, options.host);
-    this.connection.setEncoding('utf8');
-    this.connection.addListener("connect", function () {
-      self.connection.write("helo " + options.domain + "\r\n");
-      if(options.authentication === "login") {
-        self.connection.write("auth login\r\n");
-        self.connection.write(options.username + "\r\n");
-        self.connection.write(options.password + "\r\n");
+    var connection = tcp.createConnection(options.port, options.host);
+    connection.setEncoding('utf8');
+    connection.addListener("connect", function () {
+      connection.write("helo " + options.domain + "\r\n");
+      
+      if(options.authentication === "login") 
+      {
+        connection.write("auth login\r\n");
+        connection.write(options.username + "\r\n");
+        connection.write(options.password + "\r\n");
       }
-      self.connection.write("mail from: " + options.from + "\r\n");
-      self.connection.write("rcpt to: " + options.to + "\r\n");
-      self.connection.write("data\r\n");
-      self.connection.write("From: " + options.fromName + "<" + options.from + ">\r\n");
-      self.connection.write("To: " + options.toName + "<" + options.to + ">\r\n");
-      self.connection.write("Subject: " + options.subject + "\r\n");
-      self.connection.write("Content-Type: text/html\r\n");
-      self.connection.write("\r\n");
-      self.connection.write(email.wordwrap(options.body) + "\r\n");
-      self.connection.write(".\r\n");
-      self.connection.write("quit\r\n");
-      self.connection.end();
+      
+      connection.write("mail from: " + options.from + "\r\n");
+      connection.write("rcpt to: " + options.to + "\r\n");
+      connection.write("data\r\n");
+      connection.write("From: " + options.fromName + "<" + options.from + ">\r\n");
+      connection.write("To: " + options.toName + "<" + options.to + ">,<aventurella@gmail.com>\r\n");
+      connection.write("Subject: " + options.subject + "\r\n");
+      connection.write("Content-Type: text/html\r\n");
+      connection.write("\r\n");
+      connection.write(email.wordwrap(options.body) + "\r\n");
+      connection.write(".\r\n");
+      connection.write("quit\r\n");
+      connection.end();
     });
 
-    this.connection.addListener("data", function (data) 
+    connection.addListener("data", function (data) 
 	{
 		if(!email.parseResponse(data))
 			sys.puts("ERR " + data);
