@@ -343,6 +343,11 @@ $(function() {
 				ary_incomplete_task_ids.push($(this).attr("id"));
 			});
 		
+			if(!ary_incomplete_task_ids.length)
+			{
+				ary_incomplete_task_ids = null;
+			}
+		
 			$.post("/api/projects/" + project_id + "/verify/" + token, {"unverified": ary_incomplete_task_ids}, function(response) {
 				document.location.href = "/#/dashboard";
 			});
