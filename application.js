@@ -4,9 +4,8 @@ var connect      = require('connect'),
 	defaults     = require('./application/endpoints/default'),
 	sampledata   = require('./application/endpoints/sampledata'),
 	search       = require('./application/endpoints/search'),
-	project      = require('./application/endpoints/project');
+	project      = require('./application/endpoints/project'),
 	groups       = require('./application/endpoints/groups');
-	
 
 var server = connect.createServer(
 	//form({ keepExtensions: false }),

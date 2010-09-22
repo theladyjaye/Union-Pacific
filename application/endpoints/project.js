@@ -1,9 +1,14 @@
-var couchdb    = require('../libs/node-couchdb/lib/couchdb'),
+var fs         = require('fs'),
+    mustache   = require('../libs/mustache'),
+    couchdb    = require('../libs/node-couchdb/lib/couchdb'),
     client     = couchdb.createClient(5984, 'localhost'),
     db         = client.db('unionpacific'),
     formidable = require('formidable'),
 	Project    = require('../data/Project'),
-	Task       = require('../data/Task');
+	Task       = require('../data/Task'),
+    Receipt    = require('../data/Receipt'),
+    email      = require("../libs/node_mailer");
+    
 	
 exports.endpoints = function(app)
 {
@@ -13,6 +18,11 @@ exports.endpoints = function(app)
 	
 	app.post('/', createProject);
 	app.post('/:id/checklist', addItem);
+	
+	app.post('/:id/complete', projectComplete);
+	app.post('/:id/incomplete', projectComplete);
+	app.post('/:id/verify/:token', verifyProject);
+	
 	app.post('/:id/stakeholders', addStakeholder);
 	app.post('/:id/checklist/:taskId/complete', taskComplete);
 	app.post('/:id/checklist/:taskId/incomplete', taskIncomplete);
@@ -21,6 +31,88 @@ exports.endpoints = function(app)
 	
 	// the router sees '.' as a the file extension, so we will just run with it rather than regexing it
 	app.del('/:id/stakeholders/:email.:tld', deleteStakeholder); 
+}
+
+function projectComplete(req, res, next)
+{
+	var project_id = req.params.id.toLowerCase();
+	db.getDoc(encodeURIComponent(project_id), function(projectError, project)
+	{
+		if(projectError == null)
+		{
+			project.is_complete = true;
+			
+			db.saveDoc(project, function(saveError, saveData)
+			{
+				if(saveError == null)
+				{
+					project.stakeholders.forEach(function(stakeholder)
+					{
+						var receipt     = new Receipt();
+						receipt.user    = stakeholder;
+						receipt.project = project._id;
+						
+						db.saveDoc(receipt, function(receiptError, receiptData)
+						{
+							sendCompleteEmail(stakeholder, project.name, receiptData.id);
+						});
+					})
+					
+					next({"ok":true, "id":saveData.id, "rev":saveData.rev});
+				}
+				else
+				{
+					next({"ok":false, "message":"failed remove task"});
+				}
+			});
+		}
+		else
+		{
+			next({"ok":false, "message":"invalid project"});
+		}
+	});
+}
+
+function sendCompleteEmail(address, projectTitle, token)
+{
+	var basepath = fs.realpathSync('./application/templates');
+	
+	fs.readFile(basepath + '/email.project-complete.template', function (err, data) 
+	{
+		if (err) throw err;
+		
+		email.send({
+		    host           : "mail.blitzagency.com",              // smtp server hostname
+		    port           : "25",                     // smtp server port
+		    domain         : "blitz.local",            // domain used by client to identify itself to server
+		    authentication : "no auth",        // auth login is supported; anything else is no auth
+		    //username       : "YXZlbnR1cmVsbGFAYmxpdHphZ2VuY3kuY29t",       // Base64 encoded username
+		    //password       : "YmFzc2V0dDMxNA==",       // Base64 encoded password
+		    to             : address,
+		    from           : "unionpacific@blitzagency.com",
+		    fromName       : "Union Pacific",
+		    subject        : "Union Pacific - " + projectTitle + " is ready for verification",
+		    body           : mustache.to_html(data.toString(), {"projectName":projectTitle, "token":token})
+		  });
+	});
+}
+
+function verifyProject(req, res, next)
+{
+	var project_id = req.params.id.toLowerCase();
+	var token    = req.params.token.toLowerCase();
+	
+	db.getDoc(encodeURIComponent(project_id), function(projectError, project)
+	{
+		if(projectError == null)
+		{
+			
+		}
+		else
+		{
+			next({"ok":false, "message":"invalid project"});
+		}
+	});
 }
 
 
@@ -46,32 +138,40 @@ function changeTaskStatus(project_id, task_id, to_status, next)
 	{
 		if(projectError == null)
 		{
-			var didUpdateTask = false;
-			for(var i in project.checklist)
+			if(project.is_complete == true)
 			{
-				var task = project.checklist[i];
-				
-				if(task._id == task_id)
-				{
-					task.is_complete = to_status;
-					didUpdateTask = true;
-					break;
-				}
-			}
-			
-			if(didUpdateTask)
-			{
-				db.saveDoc(project, function(error, data)
-				{
-					if(error == null)
-						next({"ok":true, "id":data.id, "rev":data.rev});
-					else
-						next({"ok":false, "message":"unable to update task status"});
-				});
+				next({"ok":false, "message":"project has been marked complete, unable to change status of tasks"});
+				return;
 			}
 			else
 			{
-				next({"ok":false, "message":"invalid task"});
+				var didUpdateTask = false;
+				for(var i in project.checklist)
+				{
+					var task = project.checklist[i];
+				
+					if(task._id == task_id)
+					{
+						task.is_complete = to_status;
+						didUpdateTask = true;
+						break;
+					}
+				}
+			
+				if(didUpdateTask)
+				{
+					db.saveDoc(project, function(error, data)
+					{
+						if(error == null)
+							next({"ok":true, "id":data.id, "rev":data.rev});
+						else
+							next({"ok":false, "message":"unable to update task status"});
+					});
+				}
+				else
+				{
+					next({"ok":false, "message":"invalid task"});
+				}
 			}
 		}
 		else

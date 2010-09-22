@@ -111,6 +111,10 @@ function initialize(req, res, next)
 		p4.name         = "Lincoln MKZ";
 		p4.stakeholders = [u8._id, u7._id, u10._id];
 		
+	var p5              = new Project();
+		p5.name         = "Union Pacific";
+		p5.stakeholders = [u1._id, u2._id];
+		
 	
 	var g1       = new Group();
 		g1._id   = 'group/html';
@@ -137,16 +141,25 @@ function initialize(req, res, next)
 		g3.name  = "Server";
 		g3.addTask(new Task("404 Handling"));
 	
+	var g4       = new Group();
+		g4._id   = 'group/sparklelord';
+		g4.name  = "Sparklelord";
+		g4.addTask(new Task("Does it sparkle?"));
+		g4.addTask(new Task("Does it sap the magic force from all things nearby?"));
+		g4.addTask(new Task("Is it Hitler, Atomic Bombs, and Seabiscuit wrapped in a vegan burrito?"));
+	
 	
 	
 	p1.checklist = g1.items.concat(g2.items);
 	p2.checklist = g1.items.concat(g3.items);
 	p3.checklist = g2.items;
 	p4.checklist = g1.items;
+	p5.checklist = g4.items;
 	
 	db.saveDoc(g1);
 	db.saveDoc(g2);
 	db.saveDoc(g3);
+	db.saveDoc(g4);
 	
 	// Users
 	db.saveDoc(u1);
@@ -165,6 +178,7 @@ function initialize(req, res, next)
 	db.saveDoc(p2);
 	db.saveDoc(p3);
 	db.saveDoc(p4);
+	db.saveDoc(p5);
 	
 	next({"ok":true, "message":"done"});
 }

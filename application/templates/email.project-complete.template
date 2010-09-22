@@ -1,0 +1,8 @@
+<p><b>{{projectName}}</b> is ready for you to verify! Awesome I know! I can barely contain myself as it is!</p>
+
+<p>Click the link below to proceed to the verification process:
+http://unionpacific/?token={{token}}</p>
+
+<p>A project cannot be deployed until all stakeholders have verified the project.</p>
+
+<b>Do not reply to this email, no one is listening.</b>
