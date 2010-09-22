@@ -1,40 +1,46 @@
-<div class="column">
-	<div class="header">
-		<h1>${name}</h1>
-		<p class="timestamp">Created ${phui.utils.elapsed_time(created_on)}</p>
+<div class="project-detail-container">
+	<div class="instructions">
+		<p><strong>IMPORTANT:</strong> As a stakeholder you are responsible to go through each task below and verify each item has been completed.  By clicking a task below, you are verifying the task is complete.  You may click the task the again to mark the item as incomplete.  Once you have gone through all tasks select the button at the bottom to state the status of the project.</p>
 	</div>
-	<div class="body">
- 		<ul class="tasks">
-			{{each checklist}}
- 				<li id="${_id}" class="task {{if is_complete}}complete{{/if}}">
- 					<a href="#" class="btn-delete">x</a>
-					<div class="task-details">
-						<span class="title">${name}</span>
-						<span class="category">${category}</span>
-						<a href="#" class="is_complete"><span class="mark-as-complete">mark as complete</span><span class="mark-as-incomplete">mark as incomplete</span></a>
-					</div>
- 				</li>			
-			{{/each}}
-			<li><a href="#" class="btn-add-task">Add Task</a></li>
- 		</ul>
-	</div>
-</div>
-<div class="column sidebar">
-	<div class="header">
-		<a id="btn-complete" href="#" class="btn btn-complete disable">Complete</a>
-	</div>
-	<div class="body">
-		<div class="stakeholders">
-			<div class="title">
-				<p>Stakeholders <a href="#" class="btn-add-stakeholders btn-add">+</a></p>
-				<span class="arrow arrow-left"></span>
-				<span class="arrow arrow-right"></span>
-			</div>
-			<ul>
-				{{each stakeholders}}
-			        <li><a href="#" class="btn-delete">x</a> <span class="email">${this}</span></li>
+	<div class="column">
+		<div class="header">
+			<h1>${project.name}</h1>
+			<p class="timestamp">Created ${phui.utils.elapsed_time(project.created_on)}</p>
+		</div>
+		<div class="body">
+	 		<ul class="tasks">
+				{{each project.checklist}}
+	 				<li id="${_id}" class="task {{if is_complete}}complete{{/if}}">
+	 					<a href="#" class="btn-delete">x</a>
+						<div class="task-details">
+							<span class="title">${name}</span>
+							<span class="category">${category}</span>
+							<a href="#" class="is_complete"><span class="mark-as-complete">mark as complete</span><span class="mark-as-incomplete">mark as incomplete</span></a>
+						</div>
+	 				</li>			
 				{{/each}}
-			</ul>
+				<li class="add-task"><a href="#" class="btn-add-task">+ Add Task</a></li>
+	 		</ul>
 		</div>
 	</div>
+	<div class="column sidebar">
+		<div class="header">
+			<a id="btn-complete" href="#" class="btn btn-complete disable">Complete</a>
+		</div>
+		<div class="body">
+			<div class="stakeholders">
+				<div class="title">
+					<p>Stakeholders <a href="#" class="btn-add-stakeholders btn-add">+</a></p>
+					<span class="arrow arrow-left"></span>
+					<span class="arrow arrow-right"></span>
+				</div>
+				<ul>
+					{{each project.stakeholders}}
+				        <li><a href="#" class="btn-delete">x</a> <span class="email">${this}</span></li>
+					{{/each}}
+				</ul>
+			</div>
+		</div>
+	</div>
+	<a href="#" class="btn btn-project-status incomplete"><span class="txt-complete">Project is complete!</span><span class="txt-incomplete">Project is incomplete!</span></a>
 </div>

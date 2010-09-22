@@ -120,6 +120,8 @@ $(function() {
 					//utils.categories.push({response.id: obj.category});
 					
 					$(".jqmWindow").jqmHide();
+					
+					check_for_completion();			
 				}
 			});
 		}
@@ -178,17 +180,26 @@ $(function() {
 
 	// mark task as complete || incomplete
 	$("#project").delegate(".task .is_complete", "click", function() {
+		
 		var $this = $(this),
-			$task = $this.parents(".task"),
-			task_id = $task.attr("id"),
-			status = $task.hasClass("complete") ? "incomplete" : "complete",
-			project_id = document.location.hash.split("/").slice(-1);
+			$task = $this.parents(".task");
+			
+		if(!$(".project-detail-container").hasClass("status-verification"))
+		{				
+			var	task_id = $task.attr("id"),
+				status = $task.hasClass("complete") ? "incomplete" : "complete",
+				project_id = document.location.hash.split("/").slice(-1);
 		
-		$.post("/api/projects/" + project_id + "/checklist/" + task_id + "/" + status, function(response) {
+			$.post("/api/projects/" + project_id + "/checklist/" + task_id + "/" + status, function(response) {
+				$task.toggleClass("complete");
+				check_for_completion();			
+			});
+		}
+		else
+		{
 			$task.toggleClass("complete");
-			check_for_completion();			
-		});
-		
+			check_for_verification();
+		}
 		return false;
 	}).delegate("#btn-complete", "click", function() {
 		if(!$(this).hasClass("disable"))
@@ -221,29 +232,33 @@ $(function() {
 		}
 		return false;
 	}).delegate(".category", "click", function() {
-		var category = $(this).text().toLowerCase(),
-			$task_list = $("#project ul"),
-			$task_list_items = $task_list.find("li.task");
 		
-		if($task_list.hasClass("filtered"))
+		if(!$(".project-detail-container").hasClass("status-verification"))
 		{
-			$task_list_items.fadeIn();
-			$task_list.removeClass("filtered");
-		}
-		else
-		{		
-			$task_list_items.each(function() {
-				if($(this).find(".category").text().toLowerCase() == category)
-				{
-					$(this).fadeIn();
-				}
-				else
-				{
-					$(this).fadeOut();
-				}
-			});
+			var category = $(this).text().toLowerCase(),
+				$task_list = $("#project ul"),
+				$task_list_items = $task_list.find("li.task");
+		
+			if($task_list.hasClass("filtered"))
+			{
+				$task_list_items.fadeIn();
+				$task_list.removeClass("filtered");
+			}
+			else
+			{		
+				$task_list_items.each(function() {
+					if($(this).find(".category").text().toLowerCase() == category)
+					{
+						$(this).fadeIn();
+					}
+					else
+					{
+						$(this).fadeOut();
+					}
+				});
 			
-			$task_list.addClass("filtered");
+				$task_list.addClass("filtered");
+			}
 		}
 	
 		return false;
@@ -282,6 +297,16 @@ $(function() {
 		});	
 	
 		return false;	
+	}).delegate(".btn-project-status", "click", function() {
+		var $tasks = $("#project .tasks li.task:not(.complete)");
+		
+		console.log($tasks);
+		return false;
+	});
+
+	// block project
+	$("#block-project").delegate(".btn-back", "click", function() {
+		$("#block-project").fadeOut();
 	});
 
 	// run sammy
@@ -309,6 +334,31 @@ function check_for_completion()
 	else
 	{
 		$btn_complete.addClass("disable");
+		is_complete = false;
+	}
+	
+	return is_complete;
+}
+
+function check_for_verification()
+{
+	var $btn = $("#project .btn-project-status"),
+		$tasks = $("#project .tasks li.task"),
+		$complete_tasks = $("#project .tasks li.task.complete"),
+		task_len = $tasks.length,
+		complete_task_len = $complete_tasks.length,
+		is_complete = false;
+	
+	console.log(complete_task_len, task_len);
+	
+	if(complete_task_len >= task_len)
+	{
+		$btn.removeClass("incomplete");
+		is_complete = true;
+	}
+	else
+	{
+		$btn.addClass("incomplete");
 		is_complete = false;
 	}
 	
@@ -367,12 +417,32 @@ var app = $.sammy(function() {
 			{
 				$("#project").html("").render_template({
 					"name": "project-detail",
-					"data": json.project,
+					"data": json,
 					"complete": function() {
 						// setup categories
 						utils.setup_categories();
 						// check if all tasks are completed
 						check_for_completion();
+						
+						if(context.params["token"])
+						{
+							//	$(".project-detail-container").addClass("status-verification");
+							//	$("#project .tasks li").removeClass("complete");
+							
+							// verify token
+							$.get("/api/projects/" + context.params["project"] + "/verify/" + context.params["token"], function(response) {
+								if(response.ok) // valid token
+								{
+									$("#project").addClass("status-verification");
+									$("#project .tasks li").removeClass("complete");
+								}
+								else // invalid token, show block
+								{
+									$("#block-project").show();
+								}
+							});
+							
+						}
 					}
 				});
 			}
