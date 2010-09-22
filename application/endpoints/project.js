@@ -174,6 +174,12 @@ function projectVerify(req, res, next)
 						}
 						else
 						{
+							// RIGHT NOW ONLY SUCCESS IS WORKING
+							// TODO: if the rejected fields are there, 
+							// we need to mark the projects tasks incomplete appropriately
+							// if(fields.????)
+							
+							
 							db.view("application", "project-receipts", {"include_docs":true, "startkey":[project._id, null], "endkey":[project._id, {}]}, function(error, data)
 							{
 								if(error == null)
