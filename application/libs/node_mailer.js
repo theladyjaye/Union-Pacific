@@ -57,7 +57,7 @@ var email = {
       connection.write("rcpt to: " + options.to + "\r\n");
       connection.write("data\r\n");
       connection.write("From: " + options.fromName + "<" + options.from + ">\r\n");
-      connection.write("To: " + options.toName + "<" + options.to + ">,<aventurella@gmail.com>\r\n");
+      connection.write("To: " + options.toName + "<" + options.to + ">\r\n");
       connection.write("Subject: " + options.subject + "\r\n");
       connection.write("Content-Type: text/html\r\n");
       connection.write("\r\n");

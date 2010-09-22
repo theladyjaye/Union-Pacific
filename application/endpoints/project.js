@@ -36,7 +36,7 @@ exports.endpoints = function(app)
 	app.del('/:id/stakeholders/:email.:tld', deleteStakeholder); 
 }
 
-function sendCompleteEmail(address, projectTitle, token)
+function sendCompleteEmail(address, projectTitle, projectId, token)
 {
 	
 	var basepath = fs.realpathSync('./application/templates');
@@ -56,7 +56,7 @@ function sendCompleteEmail(address, projectTitle, token)
 		    from           : "unionpacific@blitzagency.com",
 		    fromName       : "Union Pacific",
 		    subject        : "Union Pacific - " + projectTitle + " is ready for verification",
-		    body           : mustache.to_html(data.toString(), {"projectName":projectTitle, "token":token})
+		    body           : mustache.to_html(data.toString(), {"projectName":projectTitle, "projectId":projectId, "token":token})
 		  });
 	});
 	
@@ -129,7 +129,10 @@ function verifyToken(req, res, next)
 			}
 			else
 			{
-				next({"ok":true});
+				if(receipt.verified_on == null)
+					next({"ok":true});
+				else
+					next({"ok":false, "message":"token has already been used."});
 			}
 		}
 		else
@@ -161,7 +164,7 @@ function projectComplete(req, res, next)
 						
 						db.saveDoc(receipt, function(receiptError, receiptData)
 						{
-							//sendCompleteEmail(stakeholder, project.name, receiptData.id);
+							sendCompleteEmail(stakeholder, project.name, project._id, receiptData.id);
 						});
 					})
 					
@@ -204,7 +207,7 @@ function projectVerify(req, res, next)
 							}
 							else
 							{
-								if(typeof fields.unverified != "undefined" && fields.unverified.length > 0)
+								if(fields.unverified != "null" && fields.unverified.length > 0)
 								{
 									project.is_complete = false;
 									project.is_verified = false;
@@ -246,7 +249,6 @@ function projectVerify(req, res, next)
 															stakeholders.push(row.doc.user);
 													
 														payload.docs.push(row.doc);
-													
 													});
 													
 													// bulk update and then compact
@@ -256,7 +258,7 @@ function projectVerify(req, res, next)
 														{
 															stakeholders.forEach(function(stakeholder)
 															{
-																//sendVerifyAbortedEmail(stakeholder, project.name, unverifiedTasks);
+																sendVerifyAbortedEmail(stakeholder, project.name, unverifiedTasks);
 															});
 														
 															db.compact();
@@ -313,13 +315,13 @@ function projectVerify(req, res, next)
 													{
 														project.is_verified = true;
 														
-														db.SaveDoc(project, function(projectSaveError, projectSaveData)
+														db.saveDoc(project, function(projectSaveError, projectSaveData)
 														{
 															if(projectSaveError == null)
 															{
 																stakeholders.forEach(function(stakeholder)
 																{
-																	//sendVerifyCompleteEmail(stakeholder, project.name);
+																	sendVerifyCompleteEmail(stakeholder, project.name);
 																});
 																
 																next({"ok":true});
