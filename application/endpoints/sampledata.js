@@ -303,16 +303,8 @@ function initialize(req, res, next)
 	var g1       = new Group();
 		g1._id   = 'group/html';
 		g1.name  = "Html";
-		g1.addTask(new Task("Check title tags"));
-		g1.addTask(new Task("Check Navigation"));
-		g1.addTask(new Task("Displays properly in IE 6"));
-		g1.addTask(new Task("Displays properly in IE 7"));
-		g1.addTask(new Task("Displays properly in IE 8"));
-		g1.addTask(new Task("Displays properly in Firefox (win)"));
-		g1.addTask(new Task("Displays properly in Firefox (mac)"));
-		g1.addTask(new Task("Displays properly in Chrome (win)"));
-		g1.addTask(new Task("Displays properly in Chrome (mac)"));
-		g1.addTask(new Task("Displays properly in Safari (mac)"));
+		g1.addTask(new Task("CSS is compressed"));
+		g1.addTask(new Task("JavaScript is minified"));
 	
 	var g2       = new Group();
 		g2._id   = 'group/plugin';
@@ -324,14 +316,21 @@ function initialize(req, res, next)
 		g3._id   = 'group/server';
 		g3.name  = "Server";
 		g3.addTask(new Task("404 Handling"));
+		g3.addTask(new Task("Application views do not throw exceptions - no errors"));
 	
 	var g4       = new Group();
-		g4._id   = 'group/sparklelord';
-		g4.name  = "Sparklelord";
-		g4.addTask(new Task("Does it sparkle?"));
-		g4.addTask(new Task("Does it sap the magic force from all things nearby?"));
-		g4.addTask(new Task("Is it Hitler, Atomic Bombs, and Seabiscuit wrapped in a vegan burrito?"));
-		g4.addTask(new Task("Is it Lord of the Rings with Owls?"));
+		g4._id   = 'group/ux';
+		g4.name  = "User Experience";
+		g4.addTask(new Task("Application behaves appropriately according to latest agreed upon functionality"));
+		
+	
+	var g5       = new Group();
+		g5._id   = 'group/polish';
+		g5.name  = "Polish";
+		g5.addTask(new Task("Client Provided Logos Correct"));
+		g5.addTask(new Task("Copy is correct"));
+		g5.addTask(new Task("Titles are correct application wide"));
+		g1.addTask(new Task("Navigation is functional"));
 	
 	
 	
