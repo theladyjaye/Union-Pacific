@@ -305,6 +305,7 @@ function initialize(req, res, next)
 		g1.name  = "Html";
 		g1.addTask(new Task("CSS is compressed"));
 		g1.addTask(new Task("JavaScript is minified"));
+		g1.addTask(new Task("BLITZ controlled tracking has been implemented"));
 	
 	var g2       = new Group();
 		g2._id   = 'group/plugin';
