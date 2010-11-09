@@ -34,65 +34,249 @@ function initialize(req, res, next)
 		}
 	});
 	
+	// Tech Department
 	var u1 = new User();
 	    u1._id   = "aventurella@blitzagency.com";
 	    u1.first = "Adam";
 	    u1.last  = "Venturella";
-	    u1.title = "Lorem Ipsum Dolor";
+	    u1.title = "Senior Software Developer";
 	
 	var u2 = new User();
 		u2._id   = "ptobias@blitzagency.com";
 		u2.first = "Phil";
 		u2.last  = "Tobias";
-		u2.title = "Lorem Ipsum Dolor";
+		u2.title = "Software Developer";
 		
 	var u3 = new User();
 		u3._id   = "ataylor@blitzagency.com";
 		u3.first = "Aubrey";
 		u3.last  = "Taylor";
-		u3.title = "Lorem Ipsum Dolor";
+		u3.title = "Software Developer";
 		
 	var u4 = new User();
 		u4._id   = "elouie@blitzagency.com";
 		u4.first = "Erick";
 		u4.last  = "Louie";
-		u4.title = "Lorem Ipsum Dolor";
+		u4.title = "Software Devloper";
 			
 	var u5 = new User();
 		u5._id   = "srettinger@blitzagency.com";
 		u5.first = "Steve";
 		u5.last  = "Rettinger";
-		u5.title = "Lorem Ipsum Dolor";
-				
+		u5.title = "Senior Developer";
+		
 	var u6 = new User();
-		u6._id   = "bdon@blitzagency.com";
-		u6.first = "Brian";
-		u6.last  = "Don";
-		u6.title = "Lorem Ipsum Dolor";
-					
+		u6._id   = "dpetrone@blitzagency.com";
+		u6.first = "Dino";
+		u6.last  = "Petrone";
+		u6.title = "Senior Flash Developer";
+		
 	var u7 = new User();
-		u7._id   = "dpetrone@blitzagency.com";
-		u7.first = "Dino";
-		u7.last  = "Petrone";
-		u7.title = "Lorem Ipsum Dolor";
+		u7._id   = "yflomin@blitzagency.com";
+		u7.first = "Yosef";
+		u7.last  = "Flomin";
+		u7.title = "Software Developer";
 	
 	var u8 = new User();
-		u8._id   = "aburgess@blitzagency.com";
-		u8.first = "Amanda";
-		u8.last  = "Burgess";
-		u8.title = "Lorem Ipsum Dolor";
+		u8._id   = "nsmith@blitzagency.com";
+		u8.first = "Nathanael";
+		u8.last  = "Smith";
+		u8.title = "Junior Developer";
 	
 	var u9 = new User();
-		u9._id   = "mpark@blitzagency.com";
-		u9.first = "Molly";
-		u9.last  = "Park";
-		u9.title = "Lorem Ipsum Dolor";
-	
+		u9._id   = "ngedrich@blitzagency.com";
+		u9.first = "Noah";
+		u9.last  = "Gedrich";
+		u9.title = "Senior Director, Technology";
+		
+	// Project Management
 	var u10 = new User();
-		u10._id   = "yflomin@blitzagency.com";
-		u10.first = "Yosef";
-		u10.last  = "Flomin";
-		u10.title = "Lorem Ipsum Dolor";
+		u10._id   = "bdon@blitzagency.com";
+		u10.first = "Brian";
+		u10.last  = "Don";
+		u10.title = "Senior Project Manager";
+	
+	var u11 = new User();
+		u11._id   = "aburgess@blitzagency.com";
+		u11.first = "Amanda";
+		u11.last  = "Burgess";
+		u11.title = "Project Manager";
+	
+	var u12 = new User();
+		u12._id   = "mpark@blitzagency.com";
+		u12.first = "Molly";
+		u12.last  = "Park";
+		u12.title = "Senior Program Manager";
+		
+	var u13 = new User();
+		u13._id   = "rferrante@blitzagency.com";
+		u13.first = "Robert";
+		u13.last  = "Ferrante";
+		u13.title = "Senior Program Manager";
+	
+	var u14 = new User();
+		u14._id   = "rferrante@blitzagency.com";
+		u14.first = "Robert";
+		u14.last  = "Ferrante";
+		u14.title = "Senior Program Manager";
+	
+	var u15 = new User();
+		u15._id   = "vhoy@blitzagency.com";
+		u15.first = "Vanessa";
+		u15.last  = "Hoy";
+		u15.title = "Senior Program Manager";
+	
+	var u16 = new User();
+		u16._id   = "kmccann@blitzagency.com";
+		u16.first = "Kimberly";
+		u16.last  = "McCann";
+		u16.title = "Project Manager";
+
+	var u17 = new User();
+		u17._id   = "kzaninovich@blitzagency.com";
+		u17.first = "Kim";
+		u17.last  = "Zaninovich";
+		u17.title = "Executive Producer";
+		
+	var u18 = new User();
+		u18._id   = "mholzmiller@blitzagency.com";
+		u18.first = "Michael";
+		u18.last  = "Holzmiller";
+		u18.title = "Project Manager";
+	
+	var u19 = new User();
+		u19._id   = "ltoneman@blitzagency.com";
+		u19.first = "Laura";
+		u19.last  = "Toneman";
+		u19.title = "Director, Project Management";
+	
+	var u20 = new User();
+		u20._id   = "ccotillo@blitzagency.com";
+		u20.first = "Courtnie";
+		u20.last  = "Cotillo";
+		u20.title = "Project Coordinator";
+	
+	var u21 = new User();
+		u21._id   = "derek@blitzagency.com";
+		u21.first = "Derek";
+		u21.last  = "van den Bosch";
+		u21.title = "Vice President, Delivery";
+
+	var u22 = new User();
+		u22._id   = "mmarich@blitzagency.com";
+		u22.first = "Melissa";
+		u22.last  = "Marich";
+		u22.title = "Project Manager";
+		
+	// UX
+	var u23 = new User();
+		u23._id   = "ccefalu@blitzagency.com";
+		u23.first = "Celeste";
+		u23.last  = "Cefalu";
+		u23.title = "Senior User Experience";
+	
+	var u24 = new User();
+		u24._id   = "sharris@blitzagency.com";
+		u24.first = "Sy";
+		u24.last  = "Harris";
+		u24.title = "User Experience Architect";
+
+	var u25 = new User();
+		u25._id   = "trichards@blitzagency.com";
+		u25.first = "Tim";
+		u25.last  = "Richards";
+		u25.title = "Vice President, User Experience";
+		
+	var u26 = new User();
+		u26._id   = "cerdman@blitzagency.com";
+		u26.first = "Charles";
+		u26.last  = "Erdman";
+		u26.title = "User Experience Lead";
+		
+	// Design
+	var u27 = new User();
+		u27._id   = "aphoenix@blitzagency.com";
+		u27.first = "Andru";
+		u27.last  = "Phoenix";
+		u27.title = "Interactive Senior Designer";
+
+	var u28 = new User();
+		u28._id   = "dwilliams@blitzagency.com";
+		u28.first = "Dave";
+		u28.last  = "Williams";
+		u28.title = "Art Director";
+	
+	var u29 = new User();
+		u29._id   = "eperez@blitzagency.com";
+		u29.first = "Eric";
+		u29.last  = "Perez";
+		u29.title = "Group Creative Director";
+
+	var u30 = new User();
+		u30._id   = "esquire@blitzagency.com";
+		u30.first = "Evan";
+		u30.last  = "Squire";
+		u30.title = "Designer";
+		
+	var u31 = new User();
+		u31._id   = "gcordial@blitzagency.com";
+		u31.first = "Gilbert";
+		u31.last  = "Cordial";
+		u31.title = "Senior Designer";
+		
+	var u32 = new User();
+		u32._id   = "jliu@blitzagency.com";
+		u32.first = "Jancy";
+		u32.last  = "Liu";
+		u32.title = "Senior Designer";
+	
+	var u33 = new User();
+		u33._id   = "jquon@blitzagency.com";
+		u33.first = "Jarrett";
+		u33.last  = "Quon";
+		u33.title = "Senior Designer";
+
+	var u34 = new User();
+		u34._id   = "jesguia@blitzagency.com";
+		u34.first = "Josh";
+		u34.last  = "Esguia";
+		u34.title = "Creative Director";
+		
+	var u35 = new User();
+		u35._id   = "mmurray@blitzagency.com";
+		u35.first = "Matt";
+		u35.last  = "Murray";
+		u35.title = "Associate Creative Director";
+		
+	var u36 = new User();
+		u36._id   = "nrodriguez@blitzagency.com";
+		u36.first = "Nicolle";
+		u36.last  = "Rodriguez";
+		u36.title = "Junior Designer";
+	
+	var u37 = new User();
+		u37._id   = "phikiji@blitzagency.com";
+		u37.first = "Paul";
+		u37.last  = "Hikiji";
+		u37.title = "Senior Art Director";
+		
+	var u38 = new User();
+		u38._id   = "plee@blitzagency.com";
+		u38.first = "Paul";
+		u38.last  = "Lee";
+		u38.title = "Design Director";
+	
+	var u39 = new User();
+		u39._id   = "satkinson@blitzagency.com";
+		u39.first = "Stacey";
+		u39.last  = "Atkinson";
+		u39.title = "Designer";
+	
+	var u40 = new User();
+		u40._id   = "tgip@blitzagency.com";
+		u40.first = "Thanh";
+		u40.last  = "Gip";
+		u40.title = "Designer";
 		
 	
 	var p1              = new Project();
@@ -131,8 +315,8 @@ function initialize(req, res, next)
 		g1.addTask(new Task("Displays properly in Safari (mac)"));
 	
 	var g2       = new Group();
-		g2._id   = 'group/flash';
-		g2.name  = "Flash";
+		g2._id   = 'group/plugin';
+		g2.name  = "Plugin";
 		g2.addTask(new Task("Check title tags"));
 		g2.addTask(new Task("Check Navigation"));
 	
@@ -151,11 +335,11 @@ function initialize(req, res, next)
 	
 	
 	
-	p1.checklist = g1.items.concat(g2.items);
-	p2.checklist = g1.items.concat(g3.items);
-	p3.checklist = g2.items;
-	p4.checklist = g1.items;
-	p5.checklist = g4.items;
+	//p1.checklist = g1.items.concat(g2.items);
+	//p2.checklist = g1.items.concat(g3.items);
+	//p3.checklist = g2.items;
+	//p4.checklist = g1.items;
+	//p5.checklist = g4.items;
 	
 	db.saveDoc(g1);
 	db.saveDoc(g2);
@@ -173,13 +357,43 @@ function initialize(req, res, next)
 	db.saveDoc(u8);
 	db.saveDoc(u9);
 	db.saveDoc(u10);
+	db.saveDoc(u11);
+	db.saveDoc(u12);
+	db.saveDoc(u13);
+	db.saveDoc(u14);
+	db.saveDoc(u15);
+	db.saveDoc(u16);
+	db.saveDoc(u17);
+	db.saveDoc(u18);
+	db.saveDoc(u19);
+	db.saveDoc(u20);
+	db.saveDoc(u21);
+	db.saveDoc(u22);
+	db.saveDoc(u23);
+	db.saveDoc(u24);
+	db.saveDoc(u25);
+	db.saveDoc(u26);
+	db.saveDoc(u27);
+	db.saveDoc(u28);
+	db.saveDoc(u29);
+	db.saveDoc(u30);
+	db.saveDoc(u31);
+	db.saveDoc(u32);
+	db.saveDoc(u33);
+	db.saveDoc(u34);
+	db.saveDoc(u35);
+	db.saveDoc(u36);
+	db.saveDoc(u37);
+	db.saveDoc(u38);
+	db.saveDoc(u39);
+	db.saveDoc(u40);
 	
 	// Projects
-	db.saveDoc(p1);
-	db.saveDoc(p2);
-	db.saveDoc(p3);
-	db.saveDoc(p4);
-	db.saveDoc(p5);
+	//db.saveDoc(p1);
+	//db.saveDoc(p2);
+	//db.saveDoc(p3);
+	//db.saveDoc(p4);
+	//db.saveDoc(p5);
 	
 	next({"ok":true, "message":"done"});
 }
