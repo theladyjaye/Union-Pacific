@@ -310,8 +310,10 @@ function initialize(req, res, next)
 	var g2       = new Group();
 		g2._id   = 'group/plugin';
 		g2.name  = "Plugin";
-		g2.addTask(new Task("Check title tags"));
+		g2.addTask(new Task("If full plugin deployment, check title tags"));
 		g2.addTask(new Task("Check Navigation"));
+		g2.addTask(new Task("Check random/rapid input stability"));
+		g2.addTask(new Task("Confirm flash var handling in different browsers"));
 	
 	var g3       = new Group();
 		g3._id   = 'group/server';
@@ -324,17 +326,17 @@ function initialize(req, res, next)
 		g4.name  = "User Experience";
 		g4.addTask(new Task("Application behaves appropriately according to latest agreed upon functionality"));
 		
-	
+		
 	var g5       = new Group();
 		g5._id   = 'group/polish';
 		g5.name  = "Polish";
 		g5.addTask(new Task("Client Provided Logos Correct"));
 		g5.addTask(new Task("Copy is correct"));
 		g5.addTask(new Task("Titles are correct application wide"));
-		g1.addTask(new Task("Navigation is functional"));
-	
-	
-	
+		g5.addTask(new Task("Navigation is functional"));
+		g5.addTask(new Task("Are copyright and registered trademark symbols in their proper positions"));
+		
+		
 	//p1.checklist = g1.items.concat(g2.items);
 	//p2.checklist = g1.items.concat(g3.items);
 	//p3.checklist = g2.items;
@@ -345,6 +347,7 @@ function initialize(req, res, next)
 	db.saveDoc(g2);
 	db.saveDoc(g3);
 	db.saveDoc(g4);
+	db.saveDoc(g5);
 	
 	// Users
 	db.saveDoc(u1);
