@@ -314,12 +314,17 @@ function initialize(req, res, next)
 		g2.addTask(new Task("Check Navigation"));
 		g2.addTask(new Task("Check random/rapid input stability"));
 		g2.addTask(new Task("Confirm flash var handling in different browsers"));
+		g2.addTask(new Task("Staging server references removed"));
+		g2.addTask(new Task("No cross domain issues"));
+		g2.addTask(new Task("Tracking calls tested"));
+		g2.addTask(new Task("Trace statements are disabled"));
 	
 	var g3       = new Group();
 		g3._id   = 'group/server';
 		g3.name  = "Server";
 		g3.addTask(new Task("404 Handling"));
 		g3.addTask(new Task("Application views do not throw exceptions - no errors"));
+		g3.addTask(new Task("Staging server references removed"));
 	
 	var g4       = new Group();
 		g4._id   = 'group/ux';
